@@ -216,45 +216,92 @@ textarea{resize:vertical;min-height:64px}
 /* Umschlag */
 .envelope-stage{position:relative;z-index:2;text-align:center;color:var(--sand)}
 .envelope{
-  position:relative;width:240px;height:165px;margin:0 auto 22px;cursor:pointer;
-  animation:envBob 2.6s ease-in-out infinite, envTilt 5s ease-in-out infinite;
+  position:relative;width:260px;height:178px;margin:0 auto 26px;cursor:pointer;
+  perspective:900px;transform-style:preserve-3d;
+  animation:envFloat 3.2s ease-in-out infinite;
 }
-@keyframes envBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
-@keyframes envTilt{0%,100%{filter:drop-shadow(0 14px 22px rgba(0,0,0,.28))}50%{filter:drop-shadow(0 22px 30px rgba(0,0,0,.35))}}
-.env-mini{position:absolute;font-size:18px;animation:miniFloat 3s ease-in-out infinite;z-index:6;pointer-events:none}
-.env-mini.a{top:-14px;left:30px;animation-delay:0s}
-.env-mini.b{top:-8px;right:36px;animation-delay:.8s;font-size:14px}
-.env-mini.c{top:18px;right:-12px;animation-delay:1.5s;font-size:13px}
-@keyframes miniFloat{0%,100%{transform:translateY(0) rotate(-8deg);opacity:.85}50%{transform:translateY(-7px) rotate(8deg);opacity:1}}
-.env-body{position:absolute;inset:0;background:#fff6ea;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+@keyframes envFloat{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-12px) rotate(1.2deg)}}
+
+/* Glühender Schein hinter dem Umschlag */
+.envelope::before{
+  content:"";position:absolute;inset:-30px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,138,118,.35),transparent 65%);
+  animation:glowPulse 2.6s ease-in-out infinite;z-index:0;
+}
+@keyframes glowPulse{0%,100%{opacity:.5;transform:scale(.92)}50%{opacity:.9;transform:scale(1.08)}}
+
+/* Umschlag-Korpus (Rückwand) */
+.env-body{position:absolute;inset:0;background:linear-gradient(160deg,#fbf0dd,#f3e3c8);border-radius:12px;box-shadow:0 20px 44px rgba(0,0,0,.32);z-index:1}
+/* Die herausgleitende Briefkarte */
+.env-letter{
+  position:absolute;left:14px;right:14px;top:14px;height:150px;background:#fffaf2;
+  border-radius:8px;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.12);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .9s cubic-bezier(.2,.85,.25,1) .45s;
+}
+.env-letter .mini-heart{font-size:30px;opacity:.5;animation:miniBeat 1.4s ease-in-out infinite}
+@keyframes miniBeat{0%,100%{transform:scale(1)}30%{transform:scale(1.2)}}
+/* Vordere Tasche (V-Form), verdeckt die Karte unten */
+.env-front{
+  position:absolute;inset:0;z-index:4;border-radius:12px;overflow:hidden;
+}
+.env-front::before{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:100%;
+  background:linear-gradient(160deg,#f6e8d0,#ecd9ba);
+  clip-path:polygon(0 38%, 50% 100%, 100% 38%, 100% 100%, 0 100%);
+}
+/* Seitenflügel der Tasche */
+.env-front::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(160deg,#f9ecd6,#f0ddc0);
+  clip-path:polygon(0 0, 0 100%, 50% 56%, 100% 100%, 100% 0);
+  opacity:.55;
+}
+/* Obere Klappe – öffnet realistisch nach hinten-oben */
 .env-flap{
-  position:absolute;top:0;left:0;right:0;height:0;
-  border-left:120px solid transparent;border-right:120px solid transparent;
-  border-top:92px solid #f0e2cd;transform-origin:top;transition:transform .7s cubic-bezier(.6,0,.3,1);
-  z-index:3;border-radius:10px 10px 0 0;
+  position:absolute;top:0;left:0;right:0;height:92px;z-index:5;
+  transform-origin:top center;transform:rotateX(0deg);
+  transition:transform .75s cubic-bezier(.6,0,.25,1);
+  backface-visibility:hidden;
 }
-.env-pocket{
-  position:absolute;bottom:0;left:0;right:0;height:0;
-  border-left:120px solid #faeeda;border-right:120px solid #faeeda;
-  border-top:83px solid transparent;z-index:2;border-radius:0 0 10px 10px;
+.env-flap::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(160deg,#f3e3c8,#e6d2b0);
+  clip-path:polygon(0 0, 100% 0, 50% 100%);
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.12));
 }
+/* Siegel */
 .env-seal{
-  position:absolute;top:74px;left:50%;transform:translate(-50%,-50%);z-index:4;
-  width:46px;height:46px;border-radius:50%;background:var(--rose-deep);
-  display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff6ea;
-  box-shadow:0 4px 12px rgba(0,0,0,.25);transition:transform .4s, opacity .4s;
-  animation:sealPulse 1.8s ease-in-out infinite;
+  position:absolute;top:66px;left:50%;transform:translate(-50%,-50%);z-index:6;
+  width:50px;height:50px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#d39a86,#a9614c);
+  display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff6ea;
+  box-shadow:0 4px 14px rgba(0,0,0,.3), inset 0 2px 4px rgba(255,255,255,.3);
+  transition:transform .45s cubic-bezier(.3,1.5,.5,1), opacity .4s;
+  animation:sealBeat 1.5s ease-in-out infinite;
 }
-@keyframes sealPulse{0%,100%{box-shadow:0 4px 12px rgba(0,0,0,.25),0 0 0 0 rgba(201,138,118,.5)}50%{box-shadow:0 4px 12px rgba(0,0,0,.25),0 0 0 14px rgba(201,138,118,0)}}
-.env-card{
-  position:absolute;left:12px;right:12px;top:10px;bottom:10px;background:#fff;
-  border-radius:8px;z-index:1;transition:transform .8s cubic-bezier(.2,.8,.3,1) .35s;
+@keyframes sealBeat{
+  0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.3), inset 0 2px 4px rgba(255,255,255,.3), 0 0 0 0 rgba(201,138,118,.55)}
+  50%{box-shadow:0 4px 14px rgba(0,0,0,.3), inset 0 2px 4px rgba(255,255,255,.3), 0 0 0 16px rgba(201,138,118,0)}
 }
-.envelope.opened{animation:none}
-.envelope.opened .env-flap{transform:rotateX(180deg)}
-.envelope.opened .env-seal{transform:translate(-50%,-50%) scale(0);opacity:0}
-.envelope.opened .env-card{transform:translateY(-60px)}
-.env-hint{font-size:14px;opacity:.8;letter-spacing:.06em}
+
+/* schwebende Deko-Symbole */
+.env-mini{position:absolute;font-size:18px;animation:miniFloat 3s ease-in-out infinite;z-index:7;pointer-events:none}
+.env-mini.a{top:-18px;left:28px;animation-delay:0s}
+.env-mini.b{top:-10px;right:34px;animation-delay:.7s;font-size:15px}
+.env-mini.c{top:24px;right:-16px;animation-delay:1.4s;font-size:14px}
+.env-mini.d{bottom:6px;left:-14px;animation-delay:2.1s;font-size:13px}
+@keyframes miniFloat{0%,100%{transform:translateY(0) rotate(-10deg);opacity:.8}50%{transform:translateY(-9px) rotate(10deg);opacity:1}}
+
+/* ---- Geöffnet ---- */
+.envelope.opened{animation:envOpenJump .7s cubic-bezier(.2,1.3,.4,1) forwards}
+@keyframes envOpenJump{0%{transform:translateY(0)}40%{transform:translateY(-18px) scale(1.04)}100%{transform:translateY(0) scale(1)}}
+.envelope.opened::before{animation:none;opacity:1;transform:scale(1.3)}
+.envelope.opened .env-flap{transform:rotateX(-168deg)}
+.envelope.opened .env-seal{transform:translate(-50%,-50%) scale(0) rotate(180deg);opacity:0}
+.envelope.opened .env-letter{transform:translateY(-104px) scale(1.04)}
+.env-hint{font-size:14.5px;opacity:.85;letter-spacing:.05em;animation:hintPulse 2.4s ease-in-out infinite}
+@keyframes hintPulse{0%,100%{opacity:.65}50%{opacity:1}}
 
 /* Karte nach dem Öffnen */
 .rv-card{
@@ -284,11 +331,12 @@ textarea{resize:vertical;min-height:64px}
 /* Herz-Konfetti */
 .burst-heart{
   position:fixed;z-index:400;pointer-events:none;font-size:20px;
-  animation:burst .9s cubic-bezier(.1,.8,.3,1) forwards;
+  animation:burst 1.25s cubic-bezier(.15,.7,.4,1) forwards;
 }
 @keyframes burst{
-  0%{opacity:1;transform:translate(0,0) scale(.5) rotate(0)}
-  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.25) rotate(var(--rot))}
+  0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}
+  30%{opacity:1;transform:translate(calc(var(--dx)*.6), var(--peak)) scale(1.2) rotate(calc(var(--rot)*.5))}
+  100%{opacity:0;transform:translate(var(--dx), var(--dy)) scale(.9) rotate(var(--rot))}
 }
 
 /* ---------- RSVP: Ja / Vielleicht / Nein + Datums-Auswahl ---------- */
@@ -324,8 +372,8 @@ textarea{resize:vertical;min-height:64px}
 .rv-send.show{display:block}
 
 /* Motiv schwebt sanft nach dem Zeichnen */
-#rvArt, #art{animation:artFloat 4.5s ease-in-out infinite}
-@keyframes artFloat{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-9px) rotate(1.2deg)}}
+#rvArt, #art{animation:artFloat 4s ease-in-out infinite}
+@keyframes artFloat{0%,100%{transform:translateY(0) rotate(-2deg) scale(1)}50%{transform:translateY(-12px) rotate(2deg) scale(1.04)}}
 
 /* Funkel-Sternchen über der Empfangsansicht */
 .twinkles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -472,13 +520,14 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
 
   <div class="envelope-stage" id="envStage">
     <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Einladung öffnen">
-      <span class="env-mini a">💕</span><span class="env-mini b">✨</span><span class="env-mini c">🌸</span>
+      <span class="env-mini a">💕</span><span class="env-mini b">✨</span><span class="env-mini c">🌸</span><span class="env-mini d">♥</span>
+      <div class="env-body"></div>
+      <div class="env-letter"><span class="mini-heart">💌</span></div>
+      <div class="env-front"></div>
       <div class="env-flap"></div>
-      <div class="env-card"></div>
-      <div class="env-pocket"></div>
       <div class="env-seal">♥</div>
     </div>
-    <div class="env-hint">Jemand denkt an dich … öffne das Siegel 💌</div>
+    <div class="env-hint">Jemand denkt an dich … tippe, um zu öffnen 💌</div>
   </div>
 
   <div class="rv-card" id="rvCard">
@@ -1195,19 +1244,25 @@ $("#shareBtn").onclick = async () => {
 /* ---------- Herz-Konfetti ---------- */
 function heartBurst(x, y, count = 18) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const glyphs = ["💖","💕","♥","✨","🌸"];
+  const glyphs = ["💖","💕","♥","✨","🌸","💗","⭐","🌟"];
   for (let i = 0; i < count; i++) {
     const s = document.createElement("span");
     s.className = "burst-heart";
     s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
-    const ang = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 130;
+    // nach oben/außen streuen, dann mit Schwerkraft fallen
+    const ang = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.1;
+    const dist = 80 + Math.random() * 120;
+    const dx = Math.cos(ang) * dist;
+    const peak = -(60 + Math.random() * 80);       // Scheitelpunkt oben
+    const dy = 60 + Math.random() * 120;            // Endpunkt unten (fällt)
     s.style.left = x + "px"; s.style.top = y + "px";
-    s.style.setProperty("--dx", Math.cos(ang) * dist + "px");
-    s.style.setProperty("--dy", (Math.sin(ang) * dist - 60) + "px");
-    s.style.setProperty("--rot", (Math.random() * 240 - 120) + "deg");
-    s.style.fontSize = (14 + Math.random() * 14) + "px";
+    s.style.setProperty("--dx", dx + "px");
+    s.style.setProperty("--peak", peak + "px");
+    s.style.setProperty("--dy", dy + "px");
+    s.style.setProperty("--rot", (Math.random() * 360 - 180) + "deg");
+    s.style.fontSize = (13 + Math.random() * 16) + "px";
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), 950);
+    setTimeout(() => s.remove(), 1300);
   }
 }
 
@@ -1237,13 +1292,18 @@ function showReceived(d) {
     if (env.classList.contains("opened")) return;
     env.classList.add("opened");
     const r = env.getBoundingClientRect();
-    heartBurst(r.left + r.width / 2, r.top + r.height / 2, 22);
+    // Welle 1: aus dem Siegel beim Aufspringen
+    heartBurst(r.left + r.width / 2, r.top + r.height * 0.4, 16);
+    // Welle 2: wenn die Klappe offen ist
+    setTimeout(() => heartBurst(r.left + r.width / 2, r.top + r.height * 0.3, 20), 450);
     setTimeout(() => {
       $("#envStage").style.display = "none";
       $("#rvCard").style.display = "block";
       $("#rvArt").innerHTML = (MOTIFS[d.mo] || MOTIFS.heart).fn();
       ensureFilled($("#rvArt"));
-    }, 850);
+      // Welle 3: Karte erscheint
+      heartBurst(innerWidth / 2, innerHeight * 0.42, 24);
+    }, 1050);
   };
   $("#envelope").onclick = openEnv;
   $("#envelope").onkeydown = e => { if (e.key === "Enter" || e.key === " ") openEnv(); };
