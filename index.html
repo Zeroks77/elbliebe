@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elbliebe — Date-Ideen für Dresden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#f4ece0;       /* Elbsandstein-Creme */
+  --sand-deep:#e7dac8;
+  --ink:#2a2433;        /* fast schwarz, violettstichig */
+  --elbe:#1c2a3a;       /* tiefes Elbe-Nachtblau */
+  --elbe-soft:#2f4257;
+  --rose:#c98a76;       /* Roségold/Terrakotta-Akzent */
+  --rose-deep:#a9614c;
+  --leaf:#6f7d5e;       /* gedämpftes Laubgrün */
+  --gold:#caa05a;
+  --muted:#8a8294;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--sand);color:var(--ink);
+  font-family:'Outfit',sans-serif;font-size:16px;line-height:1.55;
+  overflow-x:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+::selection{background:var(--rose);color:var(--sand)}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative;padding:46px 22px 30px;max-width:760px;margin:0 auto;text-align:center;
+}
+.eyebrow{
+  font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--rose-deep);
+  font-weight:500;margin-bottom:18px;
+}
+.hero h1{
+  font-family:'Fraunces',serif;font-weight:600;font-size:clamp(38px,9vw,68px);
+  line-height:1.02;letter-spacing:-.01em;margin-bottom:16px;
+}
+.hero h1 em{font-style:italic;color:var(--rose-deep)}
+.hero p{font-size:17px;color:var(--elbe-soft);max-width:480px;margin:0 auto;font-weight:300}
+.elbe-line{display:block;margin:26px auto 0;width:200px;height:18px}
+
+/* ---------- Mood-Auswahl ---------- */
+.section{max-width:920px;margin:0 auto;padding:18px 22px}
+.section-label{
+  font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin:30px 0 4px;
+}
+.section-sub{color:var(--muted);font-size:14.5px;margin-bottom:18px}
+.moods{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.mood{
+  border:1.5px solid var(--sand-deep);background:#fff8ef;border-radius:99px;
+  padding:9px 18px;font-size:15px;font-weight:500;color:var(--elbe-soft);
+  transition:all .22s cubic-bezier(.2,.8,.3,1);
+}
+.mood:hover{border-color:var(--rose);transform:translateY(-2px)}
+.mood.active{background:var(--elbe);color:var(--sand);border-color:var(--elbe)}
+
+/* ---------- Date-Karten ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:24px}
+.date-card{
+  background:#fff8ef;border:1px solid var(--sand-deep);border-radius:18px;overflow:hidden;
+  display:flex;flex-direction:column;
+  animation:fadeUp .55s cubic-bezier(.2,.8,.3,1) both;
+  transition:transform .25s, box-shadow .25s;
+}
+.date-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(42,36,51,.12)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.dc-top{
+  padding:16px 18px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+}
+.dc-tag{
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  padding:4px 10px;border-radius:99px;background:var(--sand-deep);color:var(--elbe-soft);white-space:nowrap;
+}
+.dc-tag.live{background:var(--rose);color:#fff}
+.dc-body{padding:12px 18px 18px;flex:1;display:flex;flex-direction:column}
+.dc-body h3{font-family:'Fraunces',serif;font-size:21px;font-weight:600;line-height:1.15;margin-bottom:8px}
+.dc-body p{font-size:14.5px;color:var(--elbe-soft);font-weight:300;flex:1}
+.dc-meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+.dc-meta span{display:flex;align-items:center;gap:5px}
+.dc-actions{display:flex;gap:8px;padding:0 18px 18px}
+.btn{
+  border-radius:11px;padding:10px 14px;font-size:14px;font-weight:500;
+  transition:all .2s;flex:1;text-align:center;
+}
+.btn-primary{background:var(--elbe);color:var(--sand)}
+.btn-primary:hover{background:var(--elbe-soft)}
+.btn-ghost{background:none;border:1.5px solid var(--sand-deep);color:var(--elbe-soft)}
+.btn-ghost:hover{border-color:var(--rose);color:var(--rose-deep)}
+.shuffle{
+  display:block;margin:30px auto 6px;background:var(--rose);color:#fff;
+  border-radius:99px;padding:13px 30px;font-size:15px;font-weight:500;
+  transition:transform .2s, background .2s;
+}
+.shuffle:hover{background:var(--rose-deep);transform:translateY(-2px)}
+.shuffle:active{transform:scale(.97)}
+
+/* ---------- Einladungs-Modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(28,42,58,.55);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:18px;z-index:100;
+}
+.overlay.open{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.invite{
+  background:var(--sand);border-radius:24px;max-width:920px;width:100%;
+  max-height:92vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;
+  animation:popIn .4s cubic-bezier(.2,.9,.3,1);
+}
+@keyframes popIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.invite-form{padding:26px 26px 30px}
+.invite-form h2{font-family:'Fraunces',serif;font-size:26px;font-weight:600;margin-bottom:4px}
+.invite-form .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+label{display:block;font-size:13px;font-weight:500;color:var(--elbe-soft);margin:14px 0 6px;letter-spacing:.02em}
+input,textarea,select{
+  width:100%;background:#fff8ef;border:1.5px solid var(--sand-deep);border-radius:12px;
+  padding:11px 13px;font-family:inherit;font-size:15px;color:var(--ink);transition:border-color .2s;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--rose)}
+textarea{resize:vertical;min-height:70px}
+.motif-row{display:flex;gap:10px;margin-top:6px}
+.motif{
+  flex:1;border:1.5px solid var(--sand-deep);background:#fff8ef;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:12px;color:var(--elbe-soft);transition:all .2s;
+}
+.motif svg{width:32px;height:32px}
+.motif.active{border-color:var(--rose);background:#fff}
+.invite-actions{display:flex;gap:10px;margin-top:24px}
+
+/* ---------- Einladungs-Vorschau (animierte Karte) ---------- */
+.invite-preview{
+  background:linear-gradient(160deg,var(--elbe),var(--elbe-soft));
+  border-radius:0 24px 24px 0;padding:30px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;color:var(--sand);position:relative;overflow:hidden;
+}
+.invite-preview::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 20%, rgba(201,138,118,.25), transparent 55%);
+}
+.preview-card{position:relative;z-index:2;width:100%}
+.preview-art{width:170px;height:170px;margin:0 auto 18px}
+.preview-to{font-size:13px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:6px}
+.preview-name{font-family:'Fraunces',serif;font-size:30px;font-weight:600;margin-bottom:14px;font-style:italic}
+.preview-msg{font-size:15px;font-weight:300;opacity:.92;margin-bottom:16px;white-space:pre-wrap}
+.preview-detail{font-size:13.5px;opacity:.8;border-top:1px solid rgba(244,236,224,.2);padding-top:14px;margin-top:4px}
+.preview-detail b{font-weight:500}
+
+/* fallende Blüten/Herzen in der Vorschau */
+.petals{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.petal{position:absolute;top:-24px;opacity:0;animation:fall linear infinite}
+@keyframes fall{
+  0%{opacity:0;transform:translateY(0) rotate(0)}
+  10%{opacity:.85}
+  100%{opacity:0;transform:translateY(420px) rotate(320deg)}
+}
+
+.close-x{position:absolute;top:14px;right:16px;font-size:22px;color:var(--sand);z-index:5;opacity:.8;line-height:1}
+.close-x:hover{opacity:1}
+
+/* gezeichnete SVG-Linien animieren */
+.draw path,.draw circle,.draw ellipse{
+  stroke-dasharray:var(--len,300);stroke-dashoffset:var(--len,300);
+  animation:draw 1.4s ease forwards;
+}
+.draw .fillin{animation:draw 1.4s ease forwards, fillFade .6s ease 1.2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fillFade{to{fill-opacity:1}}
+
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--elbe);color:var(--sand);padding:14px 22px;border-radius:14px;
+  font-size:14.5px;box-shadow:0 12px 30px rgba(28,42,58,.3);z-index:200;
+  transition:transform .4s cubic-bezier(.2,.9,.3,1);max-width:90vw;text-align:center;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13px;font-weight:300;max-width:680px;margin:0 auto}
+footer a{color:var(--rose-deep)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+@media (max-width:680px){
+  .invite{grid-template-columns:1fr}
+  .invite-preview{border-radius:0 0 24px 24px;order:-1}
+  .preview-art{width:130px;height:130px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Dresden · Verabredungen an der Elbe</div>
+  <h1>Findet euer <em>nächstes</em> gemeinsames Kapitel.</h1>
+  <p>Date-Ideen, die zu dem passen, was gerade in und um Dresden los ist — und eine Einladung, die schöner ist als jede Nachricht.</p>
+  <svg class="elbe-line" viewBox="0 0 200 18" fill="none" aria-hidden="true">
+    <path d="M2 9 Q 25 2, 50 9 T 100 9 T 150 9 T 198 9" stroke="#c98a76" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</header>
+
+<main class="section">
+  <div class="section-label">Worauf habt ihr Lust?</div>
+  <div class="section-sub">Wähl eine Stimmung — die Ideen passen sich an.</div>
+  <div class="moods" id="moods"></div>
+
+  <div class="cards" id="cards"></div>
+  <button class="shuffle" id="shuffle">✦ Neue Ideen würfeln</button>
+</main>
+
+<footer>
+  Die Veranstaltungshinweise beziehen sich auf reale Dresdner Sommer-Highlights (Stand Juni 2026) wie die
+  Filmnächte am Elbufer, den Palais Sommer und das Elbhangfest. Termine und Tickets bitte vor dem Date
+  noch einmal auf den offiziellen Seiten prüfen. Einladungen werden nur lokal in deinem Browser erzeugt.
+</footer>
+
+<!-- Einladungs-Overlay -->
+<div class="overlay" id="overlay">
+  <div class="invite">
+    <button class="close-x" id="closeX" aria-label="Schließen">×</button>
+    <div class="invite-form">
+      <h2>Einladung gestalten</h2>
+      <div class="sub" id="formFor">Für euer Date</div>
+
+      <label for="toName">An wen?</label>
+      <input id="toName" type="text" placeholder="z. B. Lena" maxlength="40">
+
+      <label for="msg">Deine Worte</label>
+      <textarea id="msg" maxlength="240" placeholder="Schreib etwas Persönliches …"></textarea>
+
+      <label for="when">Wann?</label>
+      <input id="when" type="text" placeholder="z. B. Samstag, 19 Uhr" maxlength="50">
+
+      <label>Motiv</label>
+      <div class="motif-row" id="motifs"></div>
+
+      <div class="invite-actions">
+        <button class="btn btn-primary" id="genBtn" style="flex:2">Einladung erzeugen ✦</button>
+        <button class="btn btn-ghost" id="shareBtn" style="flex:1">Teilen</button>
+      </div>
+    </div>
+
+    <div class="invite-preview">
+      <div class="petals" id="petals"></div>
+      <div class="preview-card">
+        <div class="preview-art" id="art"></div>
+        <div class="preview-to" id="pvTo">Eine Einladung für</div>
+        <div class="preview-name" id="pvName">dich</div>
+        <div class="preview-msg" id="pvMsg">Lust auf ein Date in Dresden?</div>
+        <div class="preview-detail" id="pvDetail"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   ECHTE DRESDNER DATE-IDEEN (Sommer 2026)
+   Verknüpft mit laufenden/kommenden Events der Stadt.
+============================================================ */
+const IDEAS = [
+  { mood:"Kultur", live:true, title:"Open-Air-Kino mit Altstadt-Silhouette", venue:"Filmnächte am Elbufer", when:"25. Juni – 30. August",
+    text:"Deutschlands größtes Freiluftkino am Königsufer — Film, Decke, die Frauenkirche im Rücken. Davor ein Spaziergang über die Elbwiesen." },
+  { mood:"Kultur", live:true, title:"Lauer Abend beim Palais Sommer", venue:"Neumarkt / Frauenkirche", when:"ab 20. Juni",
+    text:"Eintrittsfreies Festival vor der Frauenkirche: Konzerte, Tanz und Lesungen unter freiem Himmel. Perfekt zum spontanen Bleiben." },
+  { mood:"Romantisch", live:false, title:"Sonnenuntergang auf der Brühlschen Terrasse", venue:"„Balkon Europas“", when:"jeden Abend",
+    text:"Die klassischste Romantik der Stadt. Ein Eis vom Stand, die Elbe glitzert, Dampfer ziehen vorbei — und ihr habt Zeit." },
+  { mood:"Romantisch", live:false, title:"Gondelfahrt durch den Großen Garten", venue:"Carolasee", when:"Sommer-Saison",
+    text:"Ein Ruderboot leihen oder mit der Parkeisenbahn fahren, danach barfuß durch die Wiesen. Grün, ruhig, mitten in der Stadt." },
+  { mood:"Aktiv", live:false, title:"Elbradweg-Tour nach Pillnitz", venue:"Elbufer → Schloss Pillnitz", when:"bei gutem Wetter",
+    text:"Mit dem Rad flussaufwärts zum Schloss, Eis im Schlosspark, mit dem Dampfer zurück treiben lassen. Bewegung plus Pause." },
+  { mood:"Aktiv", live:true, title:"Elbhangfest erkunden", venue:"Loschwitz / Pillnitz", when:"26.–28. Juni",
+    text:"Drei Tage Fest am Elbhang mit Musik, Kunst und Ständen — Eintritt frei. Treibenlassen, schlendern, gemeinsam Neues entdecken." },
+  { mood:"Entspannt", live:false, title:"Bummel durch die Kunsthofpassage", venue:"Äußere Neustadt", when:"jederzeit",
+    text:"Versteckte Innenhöfe, der „singende“ Hof bei Regen, kleine Läden und Cafés. Danach ein Getränk in der Neustadt." },
+  { mood:"Entspannt", live:false, title:"Kaffee & Trödel auf dem Flohmarkt", venue:"Elbufer Neustadt (Sa)", when:"samstags",
+    text:"Samstagvormittags am Elbufer stöbern, jedem Fund eine Geschichte andichten, dabei zwei Flat Whites. Locker und gesprächig." },
+  { mood:"Kultur", live:false, title:"Banksy-Ausstellung „Mystery of Banksy“", venue:"Erlwein-Capitol", when:"läuft im Juni",
+    text:"Street-Art-Schau für alle, die lieber durch Bilder als durch Smalltalk ins Gespräch kommen. Danach ums Eck einkehren." },
+  { mood:"Romantisch", live:false, title:"Picknick im Rosengarten", venue:"Am Neustädter Elbufer", when:"Sommerabende",
+    text:"Korb packen, Decke ausbreiten, Blick auf die Altstadt. Selbstgemacht schlägt jedes Restaurant in Sachen Zweisamkeit." },
+  { mood:"Aktiv", live:false, title:"Bergbahn & Blick von den Elbschlössern", venue:"Standseilbahn Loschwitz", when:"ganztags",
+    text:"Mit der historischen Standseilbahn hoch, oben die Aussicht über das Elbtal, ein Wein auf einer Terrasse. Klein, fein, besonders." },
+  { mood:"Entspannt", live:true, title:"Korallenriff im Panometer", venue:"Panometer Dresden", when:"neue Ausstellung",
+    text:"Yadegar Asisis 360°-Panorama vom größten Korallenriff der Welt — riesig, ruhig, beeindruckend. Gemeinsam staunen ohne Eintrittsstress." },
+];
+
+const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Entspannt"];
+let activeMood = "Alle";
+let activeMotif = "bloom";
+let currentIdea = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- Mood-Buttons ---------- */
+const moodsEl = $("#moods");
+MOODS.forEach(m => {
+  const b = document.createElement("button");
+  b.className = "mood" + (m === activeMood ? " active" : "");
+  b.textContent = m;
+  b.onclick = () => { activeMood = m; document.querySelectorAll(".mood").forEach(x => x.classList.toggle("active", x.textContent === m)); renderCards(); };
+  moodsEl.appendChild(b);
+});
+
+/* ---------- Date-Karten ---------- */
+function pick(arr, n) {
+  const c = [...arr];
+  for (let i = c.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [c[i], c[j]] = [c[j], c[i]]; }
+  return c.slice(0, n);
+}
+function renderCards() {
+  const pool = activeMood === "Alle" ? IDEAS : IDEAS.filter(i => i.mood === activeMood);
+  const chosen = pick(pool, Math.min(6, pool.length));
+  $("#cards").innerHTML = chosen.map((idea, i) => `
+    <div class="date-card" style="animation-delay:${i * 60}ms">
+      <div class="dc-top">
+        <span class="dc-tag">${esc(idea.mood)}</span>
+        ${idea.live ? '<span class="dc-tag live">● jetzt aktuell</span>' : ''}
+      </div>
+      <div class="dc-body">
+        <h3>${esc(idea.title)}</h3>
+        <p>${esc(idea.text)}</p>
+        <div class="dc-meta">
+          <span>📍 ${esc(idea.venue)}</span>
+          <span>🗓 ${esc(idea.when)}</span>
+        </div>
+      </div>
+      <div class="dc-actions">
+        <button class="btn btn-primary" data-invite="${chosen.indexOf(idea)}">Einladen ✦</button>
+      </div>
+    </div>`).join("");
+  // Index korrekt über Datensatz binden
+  $("#cards").querySelectorAll("[data-invite]").forEach((btn, idx) =>
+    btn.onclick = () => openInvite(chosen[idx]));
+}
+$("#shuffle").onclick = () => { renderCards(); toast("Frische Ideen für euch ✦"); };
+
+/* ============================================================
+   SVG-MOTIVE — werden „gezeichnet“ (stroke-Animation)
+============================================================ */
+function bloomSVG() {
+  // 6-blättrige Blüte, Blätter als Ellipsen um die Mitte
+  let petals = "";
+  for (let i = 0; i < 6; i++) {
+    const a = (i * 60) * Math.PI / 180;
+    const cx = 85 + Math.cos(a) * 26, cy = 85 + Math.sin(a) * 26;
+    petals += `<ellipse class="fillin" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="15" ry="26"
+      transform="rotate(${i*60} ${cx.toFixed(1)} ${cy.toFixed(1)})"
+      fill="#c98a76" fill-opacity="0" stroke="#f4ece0" stroke-width="2" style="--len:150"/>`;
+  }
+  return `<svg viewBox="0 0 170 170" class="draw" fill="none">
+    ${petals}
+    <circle class="fillin" cx="85" cy="85" r="16" fill="#caa05a" fill-opacity="0" stroke="#f4ece0" stroke-width="2" style="--len:110"/>
+    <path d="M85 101 Q 80 140, 85 165" stroke="#6f7d5e" stroke-width="3" stroke-linecap="round" style="--len:80"/>
+    <path d="M85 130 Q 70 120, 60 128" stroke="#6f7d5e" stroke-width="3" stroke-linecap="round" style="--len:40"/>
+  </svg>`;
+}
+function heartSVG() {
+  return `<svg viewBox="0 0 170 170" class="draw" fill="none">
+    <path class="fillin" d="M85 150 C 20 105, 30 50, 62 50 C 78 50, 85 64, 85 64 C 85 64, 92 50, 108 50 C 140 50, 150 105, 85 150 Z"
+      fill="#c98a76" fill-opacity="0" stroke="#f4ece0" stroke-width="2.5" style="--len:430"/>
+    <path d="M70 78 Q 85 92, 100 78" stroke="#f4ece0" stroke-width="2" stroke-linecap="round" opacity=".7" style="--len:60"/>
+  </svg>`;
+}
+function tulipSVG() {
+  // Tulpe — Verbeugung an Dresdens Parks
+  return `<svg viewBox="0 0 170 170" class="draw" fill="none">
+    <path class="fillin" d="M85 95 C 60 95, 52 55, 60 45 C 68 60, 70 60, 70 45 C 78 60, 85 62, 85 45 C 92 62, 100 60, 100 45 C 108 60, 110 60, 110 45 C 118 55, 110 95, 85 95 Z"
+      fill="#c98a76" fill-opacity="0" stroke="#f4ece0" stroke-width="2.5" style="--len:330"/>
+    <path d="M85 95 Q 84 135, 85 162" stroke="#6f7d5e" stroke-width="3.5" stroke-linecap="round" style="--len:75"/>
+    <path d="M85 120 Q 60 108, 50 122 Q 70 126, 85 120" fill="#6f7d5e" fill-opacity=".55" stroke="#6f7d5e" stroke-width="2" style="--len:120"/>
+  </svg>`;
+}
+const MOTIFS = { bloom:{label:"Blüte",fn:bloomSVG}, heart:{label:"Herz",fn:heartSVG}, tulip:{label:"Tulpe",fn:tulipSVG} };
+
+/* Motiv-Auswahl rendern */
+const motifsEl = $("#motifs");
+Object.entries(MOTIFS).forEach(([key, m]) => {
+  const b = document.createElement("button");
+  b.className = "motif" + (key === activeMotif ? " active" : "");
+  b.dataset.motif = key;
+  b.innerHTML = `<span>${miniMotif(key)}</span>${m.label}`;
+  b.onclick = () => { activeMotif = key; document.querySelectorAll(".motif").forEach(x => x.classList.toggle("active", x.dataset.motif === key)); drawArt(); };
+  motifsEl.appendChild(b);
+});
+function miniMotif(key) {
+  if (key === "heart") return `<svg viewBox="0 0 32 32" width="32" height="32"><path d="M16 28 C2 18 6 7 14 9 C16 9.5 16 12 16 12 C16 12 16 9.5 18 9 C26 7 30 18 16 28Z" fill="#c98a76"/></svg>`;
+  if (key === "tulip") return `<svg viewBox="0 0 32 32" width="32" height="32"><path d="M16 18 C9 18 8 9 10 8 C12 11 12 11 12 8 C14 11 16 11 16 8 C18 11 20 11 20 8 C22 9 23 18 16 18Z" fill="#c98a76"/><path d="M16 18 V30" stroke="#6f7d5e" stroke-width="2"/></svg>`;
+  return `<svg viewBox="0 0 32 32" width="32" height="32"><g fill="#c98a76">${[0,60,120,180,240,300].map(d=>`<ellipse cx="16" cy="9" rx="3.4" ry="6" transform="rotate(${d} 16 16)"/>`).join("")}</g><circle cx="16" cy="16" r="3.2" fill="#caa05a"/></svg>`;
+}
+
+/* ============================================================
+   EINLADUNG
+============================================================ */
+function openInvite(idea) {
+  currentIdea = idea;
+  $("#formFor").textContent = "Für: " + idea.title;
+  $("#when").value = idea.when ? "" : "";
+  $("#when").placeholder = "z. B. " + idea.when;
+  $("#overlay").classList.add("open");
+  drawArt(); updatePreview();
+}
+function closeInvite() { $("#overlay").classList.remove("open"); }
+$("#closeX").onclick = closeInvite;
+$("#overlay").onclick = e => { if (e.target === $("#overlay")) closeInvite(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeInvite(); });
+
+function drawArt() {
+  const art = $("#art");
+  art.innerHTML = MOTIFS[activeMotif].fn(); // Neu-Einfügen triggert die stroke-Animation
+  spawnPetals();
+}
+function updatePreview() {
+  const name = $("#toName").value.trim();
+  const msg = $("#msg").value.trim();
+  const when = $("#when").value.trim();
+  $("#pvName").textContent = name || "dich";
+  $("#pvMsg").textContent = msg || (currentIdea ? "Lust auf: " + currentIdea.title + "?" : "Lust auf ein Date in Dresden?");
+  $("#pvDetail").innerHTML = currentIdea
+    ? `<b>${esc(currentIdea.title)}</b><br>📍 ${esc(currentIdea.venue)}${when ? " · 🗓 " + esc(when) : (currentIdea.when ? " · 🗓 " + esc(currentIdea.when) : "")}`
+    : (when ? "🗓 " + esc(when) : "");
+}
+["toName","msg","when"].forEach(id => $("#" + id).addEventListener("input", updatePreview));
+
+$("#genBtn").onclick = () => { drawArt(); updatePreview(); toast("Einladung fertig — jetzt teilen ✦"); };
+
+/* Fallende Blüten/Herzen in der Vorschau */
+function spawnPetals() {
+  const wrap = $("#petals");
+  wrap.innerHTML = "";
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const glyph = activeMotif === "heart" ? "♥" : activeMotif === "tulip" ? "🌷" : "❀";
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement("span");
+    s.className = "petal";
+    s.textContent = glyph;
+    s.style.left = Math.random() * 100 + "%";
+    s.style.fontSize = (12 + Math.random() * 14) + "px";
+    s.style.color = ["#c98a76","#caa05a","#e7b6a6"][Math.floor(Math.random()*3)];
+    s.style.animationDuration = (5 + Math.random() * 5) + "s";
+    s.style.animationDelay = -(Math.random() * 6) + "s";
+    wrap.appendChild(s);
+  }
+}
+
+/* Teilen */
+$("#shareBtn").onclick = async () => {
+  const name = $("#toName").value.trim() || "dich";
+  const when = $("#when").value.trim();
+  const text = `💌 Eine Einladung für ${name}:\n${$("#msg").value.trim() || "Lust auf ein Date in Dresden?"}\n\n`
+    + (currentIdea ? `✦ ${currentIdea.title}\n📍 ${currentIdea.venue}${when ? "\n🗓 " + when : (currentIdea.when ? "\n🗓 " + currentIdea.when : "")}` : "");
+  try {
+    if (navigator.share) { await navigator.share({ title: "Einladung", text }); }
+    else { await navigator.clipboard.writeText(text); toast("In die Zwischenablage kopiert ✦"); }
+  } catch { /* abgebrochen */ }
+};
+
+/* Toast */
+let toastTimer;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+/* Start */
+renderCards();
+</script>
+</body>
+</html>
