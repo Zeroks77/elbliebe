@@ -246,6 +246,38 @@ textarea{resize:vertical;min-height:64px}
 .twinkles span{position:absolute;color:#fff6ea;animation:twinkle ease-in-out infinite}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.85;transform:scale(1.15)}}
 
+/* lebendiger Verlaufs-Hintergrund */
+.receive,.confirmO{background-size:220% 220% !important;animation:bgShift 14s ease-in-out infinite}
+@keyframes bgShift{0%,100%{background-position:0% 30%}50%{background-position:100% 70%}}
+
+/* ---------- „Es ist ein Date!“ — Bestätigung ---------- */
+.confirmO{
+  position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;
+  padding:18px;background:linear-gradient(160deg,#7e4034,#c98a76);overflow:hidden;
+}
+.confirmO.open{display:flex}
+.cf-card{position:relative;z-index:2;text-align:center;color:#fff6ea;max-width:420px;width:100%;animation:cardReveal .7s cubic-bezier(.2,.9,.3,1)}
+.big-heart{font-size:72px;animation:heartbeat 1.3s ease-in-out infinite;filter:drop-shadow(0 8px 22px rgba(0,0,0,.3))}
+@keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.22)}28%{transform:scale(1)}42%{transform:scale(1.16)}56%{transform:scale(1)}}
+.cf-title{font-family:'Fraunces',serif;font-size:38px;font-weight:600;font-style:italic;margin:8px 0 20px;animation:nameBounce .8s cubic-bezier(.2,1.4,.4,1) .2s both}
+.cf-sub{font-size:14.5px;opacity:.9;margin:18px 0 14px;font-weight:300}
+.ticket{
+  background:#fff6ea;color:var(--ink);border-radius:16px;padding:18px 20px;
+  text-align:center;position:relative;box-shadow:0 18px 44px rgba(0,0,0,.28);
+  animation:ticketTilt 5s ease-in-out infinite;
+}
+@keyframes ticketTilt{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.4deg)}}
+.ticket::before,.ticket::after{
+  content:"";position:absolute;top:50%;width:22px;height:22px;border-radius:50%;
+  background:inherit;background:transparent;transform:translateY(-50%);
+}
+.ticket .tk-eyebrow{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:6px}
+.ticket .tk-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:4px}
+.ticket .tk-meta{font-size:13.5px;color:var(--elbe-soft)}
+.ticket .tk-line{border-top:2px dashed var(--sand-deep);margin:12px -8px}
+.ticket .tk-when{font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:var(--rose-deep)}
+.confirmO .rv-small{color:#fff6ea;margin-top:6px}
+
 footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13px;font-weight:300;max-width:680px;margin:0 auto}
 
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
@@ -355,12 +387,12 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
       <div class="env-pocket"></div>
       <div class="env-seal">♥</div>
     </div>
-    <div class="env-hint">Da ist Post für dich — tippe auf den Umschlag 💌</div>
+    <div class="env-hint">Jemand denkt an dich … öffne das Siegel 💌</div>
   </div>
 
   <div class="rv-card" id="rvCard">
     <div class="preview-art" id="rvArt"></div>
-    <div class="preview-to">Eine Einladung für</div>
+    <div class="preview-to">Von Herzen — für</div>
     <div class="rv-name" id="rvName">dich</div>
     <div class="rv-msg" id="rvMsg"></div>
     <div class="rv-detail" id="rvDetail"></div>
@@ -386,6 +418,20 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Termin bestätigt -->
+<div class="confirmO" id="confirmO">
+  <div class="rv-hearts" id="cfHearts"></div>
+  <div class="cf-card">
+    <div class="big-heart">💖</div>
+    <h2 class="cf-title">Es ist ein Date!</h2>
+    <div class="ticket" id="ticket"></div>
+    <p class="cf-sub">Deine Antwort ist unterwegs — bis ganz bald 🥂</p>
+    <button class="rv-small" id="cfBack">zurück</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 
 <script>
 "use strict";
@@ -815,9 +861,13 @@ function spawnPetals() {
   }
 }
 
-/* ---------- Einladung als Link kodieren ---------- */
+/* ---------- Einladung als kurzer Link ---------- */
 const encInvite = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const decInvite = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
+/* Schöne kurze Basis-URL fürs Teilen */
+const SHARE_BASE = location.hostname.endsWith("github.io")
+  ? "https://zeroks77.github.io/wanna-date/"
+  : location.origin + location.pathname;
 
 function inviteLink() {
   const data = {
@@ -829,7 +879,17 @@ function inviteLink() {
     d: currentIdea && !$("#when").value.trim() ? currentIdea.when : "",
     mo: activeMotif, th: activeTheme,
   };
-  return location.origin + location.pathname + "#e=" + encInvite(data);
+  const json = JSON.stringify(data);
+  if (window.LZString) return SHARE_BASE + "#d=" + LZString.compressToEncodedURIComponent(json);
+  return SHARE_BASE + "#e=" + encInvite(data);
+}
+function parseHash() {
+  if (location.hash.startsWith("#d=") && window.LZString) {
+    const json = LZString.decompressFromEncodedURIComponent(location.hash.slice(3));
+    if (json) return JSON.parse(json);
+  }
+  if (location.hash.startsWith("#e=")) return decInvite(location.hash.slice(3));
+  return null;
 }
 
 $("#shareBtn").onclick = async () => {
@@ -996,6 +1056,8 @@ function showReceived(d) {
       if (navigator.share) await navigator.share({ text: reply });
       else { await navigator.clipboard.writeText(reply); toast("Antwort kopiert — ab damit 💌"); }
     } catch {}
+    /* Termin-Bestätigung feiern */
+    if (answer === "ja") showConfirm(d, chosenDay, chosenTime);
   };
   $("#rvOwn").onclick = () => {
     rv.classList.remove("open");
@@ -1003,10 +1065,40 @@ function showReceived(d) {
   };
 }
 
-/* Link beim Laden prüfen */
-if (location.hash.startsWith("#e=")) {
-  try { showReceived(decInvite(location.hash.slice(3))); } catch { /* defekter Link */ }
+/* ---------- „Es ist ein Date!“ ---------- */
+function showConfirm(d, day, time) {
+  const o = $("#confirmO");
+  $("#ticket").innerHTML = `
+    <div class="tk-eyebrow">♥ Date-Ticket ♥</div>
+    <div class="tk-title">${esc(d.t || "Ein Date in Dresden")}</div>
+    ${d.v ? `<div class="tk-meta">📍 ${esc(d.v)}</div>` : ""}
+    <div class="tk-line"></div>
+    <div class="tk-when">${esc([day, time].filter(Boolean).join(" · ") || d.w || d.d || "Termin folgt 💬")}</div>
+    <div class="tk-meta" style="margin-top:6px">für ${esc(d.n || "dich")} · Einlass: mit einem Lächeln</div>`;
+  o.classList.add("open");
+  /* dichter Herzregen */
+  const hearts = $("#cfHearts");
+  hearts.innerHTML = "";
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    for (let i = 0; i < 30; i++) {
+      const s = document.createElement("span");
+      s.textContent = ["💖","💕","♥","✨","🌸","🥂"][Math.floor(Math.random()*6)];
+      s.style.left = Math.random() * 100 + "%";
+      s.style.fontSize = (14 + Math.random() * 20) + "px";
+      s.style.animationDuration = (4 + Math.random() * 5) + "s";
+      s.style.animationDelay = -(Math.random() * 8) + "s";
+      hearts.appendChild(s);
+    }
+  }
+  heartBurst(innerWidth / 2, innerHeight / 2, 30);
+  $("#cfBack").onclick = () => o.classList.remove("open");
 }
+
+/* Link beim Laden prüfen */
+try {
+  const d = parseHash();
+  if (d) showReceived(d);
+} catch { /* defekter Link */ }
 
 let toastTimer;
 function toast(msg) {
