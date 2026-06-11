@@ -65,6 +65,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .shuffle:active{transform:scale(.97)}
 .no-results{text-align:center;color:var(--muted);padding:36px;border:1.5px dashed var(--sand-deep);border-radius:18px;grid-column:1/-1}
 
+/* ---------- Live-Events-Leiste ---------- */
+.events-scroll{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 14px;margin-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.events-scroll::-webkit-scrollbar{height:6px}
+.events-scroll::-webkit-scrollbar-thumb{background:var(--sand-deep);border-radius:99px}
+.event-card{
+  flex:0 0 230px;scroll-snap-align:start;background:linear-gradient(165deg,#fff8ef,#f6ead6);
+  border:1px solid var(--sand-deep);border-radius:18px;padding:15px 16px;cursor:pointer;
+  position:relative;transition:transform .25s, box-shadow .25s;overflow:hidden;
+  animation:fadeUp .5s cubic-bezier(.2,.8,.3,1) both;
+}
+.event-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(42,36,51,.13)}
+.event-card::after{content:"♥";position:absolute;right:-6px;bottom:-10px;font-size:54px;color:var(--rose);opacity:.07}
+.ev-date{display:inline-flex;align-items:baseline;gap:6px;background:var(--rose);color:#fff;border-radius:10px;padding:4px 9px;font-size:13px;font-weight:600;margin-bottom:10px}
+.ev-date .cd{font-size:11px;opacity:.85;font-weight:500}
+.ev-tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--rose-deep);font-weight:600;margin-left:8px}
+.ev-free{font-size:11px;font-weight:600;color:var(--leaf);margin-left:6px}
+.event-card h4{font-family:'Fraunces',serif;font-size:17.5px;font-weight:600;line-height:1.18;margin-bottom:6px;position:relative;z-index:1}
+.event-card p{font-size:13px;color:var(--elbe-soft);font-weight:300;position:relative;z-index:1;margin-bottom:10px}
+.event-card .ev-where{font-size:12.5px;color:var(--muted)}
+.ev-invite{margin-top:10px;width:100%;background:var(--elbe);color:var(--sand);border-radius:10px;padding:9px;font-size:13.5px;font-weight:500;position:relative;z-index:1}
+.ev-invite:hover{background:var(--elbe-soft)}
+
 /* ---------- Einladungs-Modal ---------- */
 .overlay{position:fixed;inset:0;background:rgba(28,42,58,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}
 .overlay.open{display:flex;animation:fadeIn .3s ease}
@@ -189,9 +211,15 @@ textarea{resize:vertical;min-height:64px}
 .envelope-stage{position:relative;z-index:2;text-align:center;color:var(--sand)}
 .envelope{
   position:relative;width:240px;height:165px;margin:0 auto 22px;cursor:pointer;
-  animation:envBob 2.6s ease-in-out infinite;
+  animation:envBob 2.6s ease-in-out infinite, envTilt 5s ease-in-out infinite;
 }
-@keyframes envBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+@keyframes envBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+@keyframes envTilt{0%,100%{filter:drop-shadow(0 14px 22px rgba(0,0,0,.28))}50%{filter:drop-shadow(0 22px 30px rgba(0,0,0,.35))}}
+.env-mini{position:absolute;font-size:18px;animation:miniFloat 3s ease-in-out infinite;z-index:6;pointer-events:none}
+.env-mini.a{top:-14px;left:30px;animation-delay:0s}
+.env-mini.b{top:-8px;right:36px;animation-delay:.8s;font-size:14px}
+.env-mini.c{top:18px;right:-12px;animation-delay:1.5s;font-size:13px}
+@keyframes miniFloat{0%,100%{transform:translateY(0) rotate(-8deg);opacity:.85}50%{transform:translateY(-7px) rotate(8deg);opacity:1}}
 .env-body{position:absolute;inset:0;background:#fff6ea;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.3)}
 .env-flap{
   position:absolute;top:0;left:0;right:0;height:0;
@@ -352,6 +380,10 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
 </header>
 
 <main class="section">
+  <div class="section-label">✨ Bald in Dresden</div>
+  <div class="section-sub">Echte Termine für ein Date mit Anlass — tipp auf eine Karte zum Einladen.</div>
+  <div class="events-scroll" id="events"></div>
+
   <div class="section-label">Worauf habt ihr Lust?</div>
   <div class="section-sub">Stimmung wählen, Budget und Ort eingrenzen — die Ideen passen sich an.</div>
   <div class="moods" id="moods"></div>
@@ -433,6 +465,7 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
 
   <div class="envelope-stage" id="envStage">
     <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Einladung öffnen">
+      <span class="env-mini a">💕</span><span class="env-mini b">✨</span><span class="env-mini c">🌸</span>
       <div class="env-flap"></div>
       <div class="env-card"></div>
       <div class="env-pocket"></div>
@@ -659,9 +692,47 @@ const IDEAS = [
     text:"Der älteste Forstgarten der Welt, Bäche und stille Wege — der Geheimtipp unter den Wald-Ausflügen." },
   { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Badesee-Tag vor der Stadt", venue:"Seen im Dresdner Umland", when:"Hochsommer",
     text:"Decke, Wassermelone, ein See zum Reinspringen. Sonnencreme gegenseitig auftragen ist eh der eigentliche Plan." },
+  { mood:"Romantisch", budget:0, place:"draußen", time:"abends", live:false, title:"Wunsch-Sternschnuppen am Stadtrand", venue:"Wiesen bei Pillnitz", when:"klare Nächte",
+    text:"Decke einpacken, raus, wo es dunkel ist, und auf Sternschnuppen warten. Jeder darf sich heimlich etwas wünschen. 🌠" },
+  { mood:"Romantisch", budget:1, place:"drinnen", time:"abends", live:false, title:"Heißer Kakao & 1000 Fragen", venue:"euer Lieblingscafé", when:"Regentage",
+    text:"Eine Liste mit Fragen, die man sich nie traut, zwei Tassen Kakao mit Sahne. Näher kommt ihr euch nirgends schneller." },
+  { mood:"Entspannt", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Entchen füttern am Schlossteich", venue:"Schlosspark Pillnitz / Großer Garten", when:"jederzeit",
+    text:"Altbacken? Vielleicht. Aber Enten, Sonne und nichts müssen ist das wohlfühligste Mini-Date überhaupt. 🦆" },
+  { mood:"Kulinarisch", budget:1, place:"draußen", time:"abends", live:false, title:"Ein Eis, zwei Löffel, Elbblick", venue:"Eisdiele + Elbwiese", when:"warme Abende",
+    text:"Eine riesige Eisschale teilen, am Wasser sitzen, Dampfer winken. Süß im doppelten Sinn. 🍦" },
+  { mood:"Aktiv", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Polaroid-Schnitzeljagd durch die Altstadt", venue:"Altstadt", when:"jederzeit",
+    text:"Eine Liste mit Motiven abarbeiten — Frauenkirche, ein Kuss, das schönste Tor. Am Ende habt ihr eine Mini-Ausstellung. 📸" },
 ];
 
 const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","Ausflug"];
+
+/* ============================================================
+   LIVE-EVENTS — echte Dresdner Termine (Sommer 2026, datiert)
+============================================================ */
+const EVENTS = [
+  { date:"2026-06-26", end:"2026-06-28", title:"Elbhangfest – „Rockt den Weber!“", venue:"Loschwitz bis Pillnitz", tag:"Festival", free:true,
+    text:"Drei Tage Fest am Elbhang mit Musik, Kunst und Ständen — Eintritt frei. Treibenlassen und gemeinsam entdecken." },
+  { date:"2026-06-20", end:"2026-07-26", title:"Palais Sommer am Neumarkt", venue:"vor der Frauenkirche", tag:"Festival", free:true,
+    text:"Eintrittsfreies Kulturfestival: Konzerte, Tanz, Yoga und Lesungen unter freiem Himmel. Perfekt zum spontanen Bleiben." },
+  { date:"2026-06-25", end:"2026-08-30", title:"Filmnächte am Elbufer", venue:"Königsufer", tag:"Open-Air-Kino",
+    text:"Deutschlands größtes Freiluftkino mit Konzerten — Film, Decke, die Frauenkirche im Rücken." },
+  { date:"2026-07-24", title:"Blond – „Ich träum doch nur von Liebe“", venue:"Konzertplatz Weißer Hirsch", tag:"Konzert",
+    text:"Indie-Pop unter Bäumen oberhalb der Stadt. Ein lauer Abend, der den Bandnamen zum Date-Motto macht." },
+  { date:"2026-07-25", title:"Dresdner Schlössernacht", venue:"Elbschlösser", tag:"Lichtkunst",
+    text:"Musik, Lichtkunst und Walking Acts an den drei Elbschlössern. Eine der romantischsten Nächte des Sommers." },
+  { date:"2026-07-20", title:"Vivaldis Vier Jahreszeiten im Zwinger", venue:"Wallpavillon, Zwinger", tag:"Klassik",
+    text:"Das Dresdner Residenz Orchester im Zwingerhof — Gänsehaut zwischen barocken Fassaden unter Abendhimmel." },
+  { date:"2026-07-31", end:"2026-08-08", title:"Kaisermania", venue:"Filmnächte-Gelände", tag:"Konzert",
+    text:"Roland Kaiser an vier Abenden, mit tausenden Zaungästen auf den Elbwiesen. Mitsingen oder von außen lauschen." },
+  { date:"2026-08-21", title:"Wincent Weiss – Sommertour", venue:"Filmnächte am Elbufer", tag:"Konzert",
+    text:"Deutschpop am Elbufer mit Frauenkirche-Kulisse — Songs zum Mitsingen und Händchenhalten." },
+  { date:"2026-08-22", title:"Clueso open air", venue:"Filmnächte am Elbufer", tag:"Konzert",
+    text:"Der Erfurter mit seinen Sommerhits direkt am Wasser. Lichterketten, warme Luft, gute Stimmung." },
+  { date:"2026-08-28", title:"Tocotronic live", venue:"Tante JU", tag:"Konzert",
+    text:"Indie-Legenden in intimem Rahmen. Für alle, deren Liebessprache aus klugen Songtexten besteht." },
+  { date:"2026-09-05", title:"Elbzauber – Open-Air auf der Elbe", venue:"auf der Elbe", tag:"Open-Air", free:true,
+    text:"Maritimes Abend-Event auf dem Fluss. Lichter auf dem Wasser, die Stadt als Kulisse — pure Romantik." },
+];
 const BUDGET_LABEL = ["kostenlos","€","€€"];
 let activeMood = "Alle";
 let activeMotif = "bloom";
@@ -720,6 +791,54 @@ function sample(pool, n) {
   lastShown = new Set(chosen.map(i => i.title));
   return chosen;
 }
+/* ---------- Live-Events rendern ---------- */
+function dateLabel(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+}
+function countdown(iso) {
+  const days = Math.ceil((new Date(iso + "T00:00:00") - new Date()) / 86400000);
+  if (days < 0) return "läuft";
+  if (days === 0) return "heute!";
+  if (days === 1) return "morgen";
+  if (days <= 14) return "in " + days + " T";
+  return "";
+}
+function renderEvents() {
+  const el = $("#events");
+  const upcoming = EVENTS
+    .filter(e => new Date((e.end || e.date) + "T23:59:59") >= new Date())
+    .sort((a, b) => a.date.localeCompare(b.date));
+  if (!upcoming.length) { el.parentElement.querySelectorAll('.section-label,.section-sub')[0].style.display = "none"; el.style.display = "none"; return; }
+  el.innerHTML = upcoming.map((e, i) => {
+    const cd = countdown(e.date);
+    const range = e.end ? dateLabel(e.date) + "–" + dateLabel(e.end) : dateLabel(e.date);
+    return `<div class="event-card" data-ev="${i}" style="animation-delay:${i*50}ms">
+      <span class="ev-date">🗓 ${range}${cd ? ` <span class="cd">${cd}</span>` : ""}</span>
+      <span class="ev-tag">${esc(e.tag)}</span>${e.free ? '<span class="ev-free">gratis</span>' : ""}
+      <h4>${esc(e.title)}</h4>
+      <p>${esc(e.text)}</p>
+      <div class="ev-where">📍 ${esc(e.venue)}</div>
+      <button class="ev-invite" data-ev="${i}">Dazu einladen ✦</button>
+    </div>`;
+  }).join("");
+  el.querySelectorAll("[data-ev]").forEach(node => node.onclick = () => {
+    const e = upcoming[Number(node.dataset.ev)];
+    openInviteEvent(e);
+  });
+}
+/* Event als „Idee“ in den Einladungs-Editor übergeben */
+function openInviteEvent(e) {
+  currentIdea = { title: e.title, venue: e.venue, when: e.end ? dateLabel(e.date) + "–" + dateLabel(e.end) : dateLabel(e.date) + ".2026" };
+  $("#formFor").textContent = "Für: " + e.title;
+  $("#when").placeholder = "z. B. " + currentIdea.when;
+  if (e.tag === "Lichtkunst" || e.title.includes("Schlössernacht") || e.title.includes("Elbzauber")) activeTheme = "night";
+  $("#overlay").classList.add("open");
+  // Events sind nicht im IDEAS-Array → für den Link nutzen wir die Freitext-Felder
+  currentIdea._eventTitle = e.title; currentIdea._eventVenue = e.venue; currentIdea._eventWhen = currentIdea.when;
+  drawArt(); updatePreview();
+}
+
 function renderCards() {
   const pool = filtered();
   $("#count").textContent = pool.length + " Ideen im Pool";
@@ -941,7 +1060,7 @@ const SHARE_BASE = location.hostname.endsWith("github.io")
 
 function inviteLink() {
   const ideaIdx = currentIdea ? IDEAS.indexOf(currentIdea) : -1;
-  // Kompaktes Array statt Objekt mit Schlüsseln; Idee als Index (spart den Volltext)
+  const isEvent = currentIdea && ideaIdx === -1 && currentIdea._eventTitle;
   const arr = [
     $("#toName").value.trim(),
     $("#msg").value.trim(),
@@ -950,7 +1069,13 @@ function inviteLink() {
     activeMotif,
     activeTheme,
   ];
-  // leere Felder am Ende abschneiden
+  // Event-Einladung: Titel/Ort/Termin als Zusatzfelder anhängen
+  if (isEvent) {
+    arr[3] = -1;
+    arr[6] = currentIdea._eventTitle;
+    arr[7] = currentIdea._eventVenue;
+    arr[8] = currentIdea._eventWhen || "";
+  }
   while (arr.length && (arr[arr.length - 1] === "" || arr[arr.length - 1] === -1)) arr.pop();
   const json = JSON.stringify(arr);
   const packed = window.LZString ? LZString.compressToEncodedURIComponent(json) : encInvite(arr);
@@ -971,8 +1096,11 @@ function parseHash() {
   const a = JSON.parse(json);
   if (Array.isArray(a)) {
     const idea = (a[3] >= 0 && IDEAS[a[3]]) ? IDEAS[a[3]] : null;
+    // Event-Einladung mit Freitext (Index 6/7/8)
+    const evTitle = a[6] || "", evVenue = a[7] || "", evWhen = a[8] || "";
     return { n: a[0] || "", m: a[1] || "", w: a[2] || "",
-      t: idea ? idea.title : "", v: idea ? idea.venue : "", d: (idea && !a[2]) ? idea.when : "",
+      t: idea ? idea.title : evTitle, v: idea ? idea.venue : evVenue,
+      d: idea ? (!a[2] ? idea.when : "") : evWhen,
       mo: a[4] || "heart", th: a[5] || "night" };
   }
   return fromObj(a);
@@ -1215,6 +1343,7 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
+renderEvents();
 renderCards();
 </script>
 </body>
