@@ -100,6 +100,18 @@ label{display:block;font-size:13px;font-weight:500;color:var(--elbe-soft);margin
 input,textarea{width:100%;background:#fff8ef;border:1.5px solid var(--sand-deep);border-radius:12px;padding:11px 13px;font-family:inherit;font-size:15px;color:var(--ink);transition:border-color .2s}
 input:focus,textarea:focus{outline:none;border-color:var(--rose)}
 textarea{resize:vertical;min-height:64px}
+.label-hint{font-weight:400;color:var(--muted);font-size:11.5px;letter-spacing:0;text-transform:none}
+.msg-suggestions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.msg-sug{
+  border:1.5px solid var(--sand-deep);background:#fff8ef;border-radius:99px;
+  padding:6px 12px;font-size:12.5px;color:var(--rose-deep);font-weight:500;
+  transition:all .2s cubic-bezier(.2,1.2,.4,1);cursor:pointer;line-height:1.3;
+}
+.msg-sug:hover{border-color:var(--rose);background:#fff;transform:translateY(-2px)}
+.msg-sug:active{transform:scale(.95)}
+.preview-mood{font-size:12.5px;letter-spacing:.12em;opacity:.7;font-style:italic;margin-bottom:12px;text-transform:lowercase}
+.preview-signed{font-family:'Fraunces',serif;font-style:italic;font-size:15px;opacity:.85;margin-top:14px}
+.preview-signed::before{content:"♥ ";opacity:.7}
 .motif-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
 .motif{border:1.5px solid var(--sand-deep);background:#fff8ef;border-radius:12px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--elbe-soft);transition:all .2s}
 .motif svg{width:30px;height:30px}
@@ -313,9 +325,12 @@ textarea{resize:vertical;min-height:64px}
 .rv-name{font-family:'Fraunces',serif;font-size:36px;font-weight:600;font-style:italic;margin:4px 0 8px;animation:nameBounce .9s cubic-bezier(.2,1.4,.4,1) .3s both}
 .rv-mood{font-size:13px;letter-spacing:.14em;text-transform:lowercase;opacity:.7;margin-bottom:14px;font-style:italic;animation:cardReveal .6s ease .5s both}
 @keyframes nameBounce{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+@keyframes joyWiggle{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-2deg) scale(1.03)}40%{transform:rotate(2deg) scale(1.03)}60%{transform:rotate(-1.5deg) scale(1.02)}80%{transform:rotate(1.5deg) scale(1.01)}}
 .rv-msg{font-size:16.5px;font-weight:300;opacity:.95;margin-bottom:18px;white-space:pre-wrap;line-height:1.6}
 .rv-detail{font-size:14px;opacity:.85;border-top:1px solid rgba(244,236,224,.25);padding-top:16px;margin-bottom:24px}
 .rv-detail b{font-weight:500}
+.rv-signed{font-family:'Fraunces',serif;font-style:italic;font-size:16px;opacity:.9;margin:-12px 0 24px}
+.rv-signed::before{content:"♥ ";opacity:.7}
 .rv-actions{display:flex;gap:10px;flex-direction:column;align-items:center}
 .btn-yes{
   background:#fff6ea;color:var(--rose-deep);border-radius:99px;padding:15px 34px;
@@ -479,24 +494,28 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
       <h2>Einladung gestalten</h2>
       <div class="sub" id="formFor">Für euer Date</div>
 
-      <label for="toName">An wen?</label>
+      <label for="toName">An wen? 💕</label>
       <input id="toName" type="text" placeholder="z. B. Lena" maxlength="40">
 
-      <label for="msg">Deine Worte</label>
-      <textarea id="msg" maxlength="240" placeholder="Schreib etwas Persönliches …"></textarea>
+      <label for="msg">Deine Worte <span class="label-hint">— tippe einen Vorschlag oder schreib selbst</span></label>
+      <textarea id="msg" maxlength="240" placeholder="Schreib etwas von Herzen …"></textarea>
+      <div class="msg-suggestions" id="msgSuggestions"></div>
 
-      <label for="when">Wann?</label>
+      <label for="when">Wann? 🗓</label>
       <input id="when" type="text" placeholder="z. B. Samstag, 19 Uhr" maxlength="50">
 
-      <label>Motiv</label>
+      <label for="signed">Dein Name <span class="label-hint">— wer fragt?</span></label>
+      <input id="signed" type="text" placeholder="z. B. Tom" maxlength="40">
+
+      <label>Motiv ✨</label>
       <div class="motif-row" id="motifs"></div>
 
-      <label>Farbwelt</label>
+      <label>Farbwelt 🎨</label>
       <div class="theme-row" id="themes"></div>
 
       <div class="invite-actions">
         <button class="btn btn-primary" id="genBtn" style="flex:2">Einladung erzeugen ✦</button>
-        <button class="btn btn-ghost" id="shareBtn" style="flex:1">Teilen</button>
+        <button class="btn btn-ghost" id="shareBtn" style="flex:1">Teilen 💌</button>
       </div>
     </div>
 
@@ -506,8 +525,10 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
         <div class="preview-art" id="art"></div>
         <div class="preview-to">Eine Einladung für</div>
         <div class="preview-name" id="pvName">dich</div>
+        <div class="preview-mood" id="pvMood"></div>
         <div class="preview-msg" id="pvMsg">Lust auf ein Date in Dresden?</div>
         <div class="preview-detail" id="pvDetail"></div>
+        <div class="preview-signed" id="pvSigned"></div>
       </div>
     </div>
   </div>
@@ -537,6 +558,7 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
     <div class="rv-mood" id="rvMood"></div>
     <div class="rv-msg" id="rvMsg"></div>
     <div class="rv-detail" id="rvDetail"></div>
+    <div class="rv-signed" id="rvSigned"></div>
     <div class="rv-actions">
       <div class="rsvp-row">
         <button class="rsvp-btn" data-ans="ja">Ja! 💖</button>
@@ -1091,6 +1113,7 @@ Object.entries(THEMES).forEach(([key, t]) => {
     document.querySelectorAll(".swatch").forEach(x => x.classList.toggle("active", x.dataset.theme === key));
     $("#preview").className = "invite-preview theme-" + key;
     spawnPetals();
+    updatePreview();
   };
   themesEl.appendChild(b);
 });
@@ -1098,10 +1121,48 @@ Object.entries(THEMES).forEach(([key, t]) => {
 /* ============================================================
    EINLADUNG
 ============================================================ */
+/* Süße Nachrichten-Vorschläge — teils kontextbezogen zur Idee */
+const MSG_TEMPLATES = [
+  "Ich muss ständig an dich denken … hättest du Lust auf ein Date? 🥰",
+  "Ich würde so gern Zeit mit dir verbringen. Sagst du ja? 💕",
+  "Mit dir wird selbst ein normaler Tag besonders. Wollen wir? ✨",
+  "Ich hab da eine Idee für uns zwei — und hoffe so, dass du Lust hast. 💌",
+  "Du machst mich glücklich. Lass uns das hier zusammen erleben? 🌸",
+  "Ein bisschen aufgeregt frag ich dich: Zeit für ein Date mit mir? 🙈",
+  "Für dich würde ich die Sterne vom Himmel holen — fangen wir hiermit an? 🌟",
+];
+function suggestionsFor(idea) {
+  const list = [...MSG_TEMPLATES];
+  if (idea && idea.title) {
+    list.unshift(`„${idea.title}" — und das am liebsten mit dir. Kommst du mit? 💕`);
+    list.unshift(`Ich hab uns etwas Schönes herausgesucht. Lust auf ${idea.title.toLowerCase()}? 🥰`);
+  }
+  // 4 zufällige, ohne Dopplung
+  const out = [];
+  const pool = [...list];
+  while (out.length < 4 && pool.length) {
+    out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  }
+  return out;
+}
+function renderMsgSuggestions(idea) {
+  const wrap = $("#msgSuggestions");
+  wrap.innerHTML = suggestionsFor(idea).map(s =>
+    `<button class="msg-sug" type="button">${esc(s)}</button>`).join("");
+  wrap.querySelectorAll(".msg-sug").forEach(b => b.onclick = () => {
+    $("#msg").value = b.textContent;
+    updatePreview();
+    // kurzes Funkeln am Button
+    const r = b.getBoundingClientRect();
+    heartBurst(r.left + r.width / 2, r.top, 8);
+  });
+}
+
 function openInvite(idea) {
   currentIdea = idea;
   $("#formFor").textContent = "Für: " + idea.title;
   $("#when").placeholder = "z. B. " + idea.when;
+  renderMsgSuggestions(idea);
   $("#overlay").classList.add("open");
   drawArt(); updatePreview();
 }
@@ -1111,8 +1172,6 @@ $("#overlay").onclick = e => { if (e.target === $("#overlay")) closeInvite(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeInvite(); });
 
 function ensureFilled(container) {
-  // Sicherheitsnetz: falls die fillFade-CSS-Animation auf einem Browser nicht
-  // greift, machen wir die Füllungen nach dem Zeichnen sichtbar.
   setTimeout(() => {
     container.querySelectorAll(".fillin").forEach(el => { el.style.fillOpacity = "1"; });
   }, 1900);
@@ -1127,13 +1186,16 @@ function updatePreview() {
   const name = $("#toName").value.trim();
   const msg = $("#msg").value.trim();
   const when = $("#when").value.trim();
+  const signed = $("#signed").value.trim();
   $("#pvName").textContent = name || "dich";
+  $("#pvMood").textContent = "✦ " + ((THEMES[activeTheme] || THEMES.night).mood) + " ✦";
   $("#pvMsg").textContent = msg || (currentIdea ? "Lust auf: " + currentIdea.title + "?" : "Lust auf ein Date in Dresden?");
   $("#pvDetail").innerHTML = currentIdea
     ? `<b>${esc(currentIdea.title)}</b><br>📍 ${esc(currentIdea.venue)}${when ? " · 🗓 " + esc(when) : (currentIdea.when ? " · 🗓 " + esc(currentIdea.when) : "")}`
     : (when ? "🗓 " + esc(when) : "");
+  $("#pvSigned").textContent = signed ? "von " + signed : "";
 }
-["toName","msg","when"].forEach(id => $("#" + id).addEventListener("input", updatePreview));
+["toName","msg","when","signed"].forEach(id => $("#" + id).addEventListener("input", updatePreview));
 $("#genBtn").onclick = e => { drawArt(); updatePreview(); heartBurst(e.clientX, e.clientY, 16); toast("Einladung fertig — jetzt teilen ✦"); };
 
 function spawnPetals() {
@@ -1166,6 +1228,7 @@ const SHARE_BASE = location.hostname.endsWith("github.io")
 function inviteLink() {
   const ideaIdx = currentIdea ? IDEAS.indexOf(currentIdea) : -1;
   const isEvent = currentIdea && ideaIdx === -1 && currentIdea._eventTitle;
+  const signed = $("#signed").value.trim();
   const arr = [
     $("#toName").value.trim(),
     $("#msg").value.trim(),
@@ -1174,12 +1237,17 @@ function inviteLink() {
     activeMotif,
     activeTheme,
   ];
-  // Event-Einladung: Titel/Ort/Termin als Zusatzfelder anhängen
+  // Event-Einladung: Titel/Ort/Termin als Zusatzfelder (6/7/8)
   if (isEvent) {
     arr[3] = -1;
     arr[6] = currentIdea._eventTitle;
     arr[7] = currentIdea._eventVenue;
     arr[8] = currentIdea._eventWhen || "";
+  }
+  // Signatur an Index 9 (Plätze 6-8 ggf. mit leer auffüllen)
+  if (signed) {
+    for (let k = 6; k < 9; k++) if (arr[k] === undefined) arr[k] = "";
+    arr[9] = signed;
   }
   while (arr.length && (arr[arr.length - 1] === "" || arr[arr.length - 1] === -1)) arr.pop();
   const json = JSON.stringify(arr);
@@ -1201,18 +1269,17 @@ function parseHash() {
   const a = JSON.parse(json);
   if (Array.isArray(a)) {
     const idea = (a[3] >= 0 && IDEAS[a[3]]) ? IDEAS[a[3]] : null;
-    // Event-Einladung mit Freitext (Index 6/7/8)
     const evTitle = a[6] || "", evVenue = a[7] || "", evWhen = a[8] || "";
     return { n: a[0] || "", m: a[1] || "", w: a[2] || "",
       t: idea ? idea.title : evTitle, v: idea ? idea.venue : evVenue,
       d: idea ? (!a[2] ? idea.when : "") : evWhen,
-      mo: a[4] || "heart", th: a[5] || "night" };
+      mo: a[4] || "heart", th: a[5] || "night", s: a[9] || "" };
   }
   return fromObj(a);
 }
 /* Alt-Objektformat → einheitliche Struktur */
 function fromObj(o) {
-  return { n: o.n||"", m: o.m||"", w: o.w||"", t: o.t||"", v: o.v||"", d: o.d||"", mo: o.mo||"heart", th: o.th||"night" };
+  return { n: o.n||"", m: o.m||"", w: o.w||"", t: o.t||"", v: o.v||"", d: o.d||"", mo: o.mo||"heart", th: o.th||"night", s: o.s||"" };
 }
 
 async function shortenUrl(longUrl) {
@@ -1229,15 +1296,16 @@ async function shortenUrl(longUrl) {
 
 $("#shareBtn").onclick = async () => {
   const name = $("#toName").value.trim() || "dich";
+  const signed = $("#signed").value.trim();
   const btn = $("#shareBtn");
   const original = btn.textContent;
   btn.textContent = "Kürze …"; btn.disabled = true;
   const url = await shortenUrl(inviteLink());
   btn.textContent = original; btn.disabled = false;
-  const text = `💌 ${name}, da wartet eine Einladung auf dich — tipp auf den Link und öffne den Umschlag:\n${url}`;
+  const text = `💌 Hey ${name}, jemand hat dir eine kleine Einladung gemacht …\nTipp auf den Link, öffne den Umschlag und schau, wer an dich denkt 🥰✨\n${url}${signed ? `\n\n— mit Herz, ${signed}` : ""}`;
   try {
-    if (navigator.share) { await navigator.share({ title: "Eine Einladung 💌", text }); }
-    else { await navigator.clipboard.writeText(text); toast("Kurzlink kopiert — jetzt verschicken 💌"); }
+    if (navigator.share) { await navigator.share({ title: "Eine Einladung für dich 💌", text }); }
+    else { await navigator.clipboard.writeText(text); toast("Liebevolle Einladung kopiert — jetzt verschicken 💌"); }
   } catch { /* abgebrochen */ }
 };
 
@@ -1314,6 +1382,7 @@ function showReceived(d) {
   $("#rvDetail").innerHTML = d.t
     ? `<b>${esc(d.t)}</b><br>📍 ${esc(d.v)}${(d.w || d.d) ? " · 🗓 " + esc(d.w || d.d) : ""}`
     : (d.w ? "🗓 " + esc(d.w) : "");
+  $("#rvSigned").textContent = d.s ? "von " + d.s : "";
 
   /* Funkel-Sternchen */
   const tw = $("#twinkles");
@@ -1377,14 +1446,18 @@ function showReceived(d) {
   };
   function buildReply() {
     if (!answer) return;
+    const to = d.s ? d.s + ", " : "";       // an den Einladenden
     let txt;
     if (answer === "ja") {
-      txt = `Ja, sehr gern! 💖 Ich freu mich riesig${d.t ? " auf „" + d.t + "“" : ""}!`;
+      txt = `${to}ja — tausend Mal ja! 💖 Ich freu mich riesig${d.t ? " auf „" + d.t + "“" : ""} mit dir!`;
       if (chosenDay || chosenTime) txt += `\n🗓 Mir passt: ${[chosenDay, chosenTime].filter(Boolean).join(" ")} 🥰`;
+      txt += `\nDanke, dass du an mich gedacht hast 💕`;
     } else if (answer === "vielleicht") {
-      txt = `Klingt schön 🙈 Vielleicht!${(chosenDay || chosenTime) ? `\n🗓 Am ehesten: ${[chosenDay, chosenTime].filter(Boolean).join(" ")}` : ""}\nLass uns nochmal quatschen 💬`;
+      txt = `${to}das klingt wirklich schön 🙈 Ich sag mal: vielleicht!`;
+      if (chosenDay || chosenTime) txt += `\n🗓 Am ehesten würde mir passen: ${[chosenDay, chosenTime].filter(Boolean).join(" ")}`;
+      txt += `\nLass uns nochmal quatschen 💬✨`;
     } else {
-      txt = `Diesmal passt es leider nicht 🥺 Aber frag mich unbedingt nochmal — ich mag, dass du an mich gedacht hast 💛`;
+      txt = `${to}diesmal passt es bei mir leider nicht 🥺 — aber frag mich unbedingt nochmal! Es hat mich total gefreut, dass du an mich gedacht hast 💛`;
     }
     $("#rvSend").dataset.reply = txt;
     $("#rvSend").classList.add("show");
@@ -1396,7 +1469,12 @@ function showReceived(d) {
       $("#receive").querySelectorAll(".rsvp-btn").forEach(x => x.classList.toggle("active", x === btn));
       $("#rvReaction").textContent = REACTIONS[answer];
       $("#dayPick").classList.toggle("show", answer !== "nein");
-      if (answer === "ja") heartBurst(e.clientX, e.clientY, 30);
+      if (answer === "ja") {
+        heartBurst(e.clientX, e.clientY, 30);
+        const card = $("#rvCard");
+        card.style.animation = "none"; void card.offsetWidth;
+        card.style.animation = "joyWiggle .6s ease";
+      }
       else if (answer === "vielleicht") heartBurst(e.clientX, e.clientY, 14);
       buildReply();
     };
