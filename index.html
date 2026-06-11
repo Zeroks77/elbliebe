@@ -115,6 +115,9 @@ textarea{resize:vertical;min-height:64px}
 .invite-preview.theme-night{background:linear-gradient(160deg,#1c2a3a,#2f4257)}
 .invite-preview.theme-rose{background:linear-gradient(160deg,#7e4034,#c98a76)}
 .invite-preview.theme-forest{background:linear-gradient(160deg,#2c4233,#6f7d5e)}
+.invite-preview.theme-sunset{background:linear-gradient(160deg,#8a3a52,#d98a5a)}
+.invite-preview.theme-lavender{background:linear-gradient(160deg,#4a3b6b,#9a86b8)}
+.invite-preview.theme-ocean{background:linear-gradient(160deg,#13414a,#3f8a8f)}
 .invite-preview::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 20%, rgba(244,236,224,.14), transparent 55%)}
 .preview-card{position:relative;z-index:2;width:100%}
 .preview-art{width:170px;height:170px;margin:0 auto 16px}
@@ -199,6 +202,9 @@ textarea{resize:vertical;min-height:64px}
 .receive.theme-night{background:linear-gradient(160deg,#1c2a3a,#2f4257)}
 .receive.theme-rose{background:linear-gradient(160deg,#7e4034,#c98a76)}
 .receive.theme-forest{background:linear-gradient(160deg,#2c4233,#6f7d5e)}
+.receive.theme-sunset{background:linear-gradient(160deg,#8a3a52,#d98a5a)}
+.receive.theme-lavender{background:linear-gradient(160deg,#4a3b6b,#9a86b8)}
+.receive.theme-ocean{background:linear-gradient(160deg,#13414a,#3f8a8f)}
 .rv-hearts{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .rv-hearts span{position:absolute;bottom:-30px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{
@@ -257,7 +263,8 @@ textarea{resize:vertical;min-height:64px}
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
 .rv-card .preview-art{width:185px;height:185px;margin:0 auto 14px}
-.rv-name{font-family:'Fraunces',serif;font-size:36px;font-weight:600;font-style:italic;margin:4px 0 16px;animation:nameBounce .9s cubic-bezier(.2,1.4,.4,1) .3s both}
+.rv-name{font-family:'Fraunces',serif;font-size:36px;font-weight:600;font-style:italic;margin:4px 0 8px;animation:nameBounce .9s cubic-bezier(.2,1.4,.4,1) .3s both}
+.rv-mood{font-size:13px;letter-spacing:.14em;text-transform:lowercase;opacity:.7;margin-bottom:14px;font-style:italic;animation:cardReveal .6s ease .5s both}
 @keyframes nameBounce{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
 .rv-msg{font-size:16.5px;font-weight:300;opacity:.95;margin-bottom:18px;white-space:pre-wrap;line-height:1.6}
 .rv-detail{font-size:14px;opacity:.85;border-top:1px solid rgba(244,236,224,.25);padding-top:16px;margin-bottom:24px}
@@ -478,6 +485,7 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
     <div class="preview-art" id="rvArt"></div>
     <div class="preview-to">Von Herzen — für</div>
     <div class="rv-name" id="rvName">dich</div>
+    <div class="rv-mood" id="rvMood"></div>
     <div class="rv-msg" id="rvMsg"></div>
     <div class="rv-detail" id="rvDetail"></div>
     <div class="rv-actions">
@@ -702,6 +710,46 @@ const IDEAS = [
     text:"Eine riesige Eisschale teilen, am Wasser sitzen, Dampfer winken. Süß im doppelten Sinn. 🍦" },
   { mood:"Aktiv", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Polaroid-Schnitzeljagd durch die Altstadt", venue:"Altstadt", when:"jederzeit",
     text:"Eine Liste mit Motiven abarbeiten — Frauenkirche, ein Kuss, das schönste Tor. Am Ende habt ihr eine Mini-Ausstellung. 📸" },
+
+  /* ---- noch mehr Ideen ---- */
+  { mood:"Romantisch", budget:2, place:"drinnen", time:"abends", live:false, title:"Dinner in der Drehbar über den Dächern", venue:"Hotelbar mit Stadtblick", when:"abends",
+    text:"Ein Cocktail, während sich Dresden langsam unter euch dreht. Lichter, Höhe, leise Musik — Filmkulisse inklusive. 🍸" },
+  { mood:"Romantisch", budget:0, place:"draußen", time:"abends", live:false, title:"Lieblingsplätze-Tour", venue:"eure Stadt", when:"jederzeit",
+    text:"Jeder zeigt dem anderen drei Orte, die ihm etwas bedeuten, und erzählt warum. Die persönlichste Stadtführung überhaupt." },
+  { mood:"Romantisch", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Kirschblüten im Japanischen Garten", venue:"Japanischer Garten, Großer Garten", when:"Frühling/Sommer",
+    text:"Stiller Pavillon, Teich, raschelnde Blätter. Ein kleiner Ort, der sich anfühlt, als wärt ihr kurz verreist. 🌸" },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"abends", live:false, title:"Stummfilm mit Live-Orgel", venue:"Filmtheater / Kirche", when:"Sondertermine",
+    text:"Ein alter Film, dazu live gespielte Musik — ungewöhnlich, atmosphärisch, ein echter Gesprächsstoff für danach." },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"tagsüber", live:false, title:"Mathematisch-Physikalischer Salon", venue:"Zwinger", when:"Di–So",
+    text:"Uralte Globen, Uhren und Messinstrumente im Zwinger — verspielt und schön, auch wenn man keine Physik mag. ⏳" },
+  { mood:"Kultur", budget:2, place:"drinnen", time:"abends", live:false, title:"Ballett im Schauspielhaus", venue:"Semperoper / Staatsschauspiel", when:"Spielplan",
+    text:"Sich einmal richtig schick machen und gemeinsam staunen. Funktioniert auch wunderbar als Überraschung." },
+  { mood:"Aktiv", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Slackline & Picknick am Elbufer", venue:"Elbwiesen", when:"warme Tage",
+    text:"Balancieren üben, runterfallen, lachen, dann Decke und Snacks. Bewegung und Faulenzen in einem. 🤸" },
+  { mood:"Aktiv", budget:2, place:"drinnen", time:"flexibel", live:false, title:"Töpferkurs für zwei", venue:"Keramikwerkstätten", when:"Kurstermine",
+    text:"Hände im Ton, am Ende eine schiefe Tasse mit Erinnerungswert. Kreativ, albern, überraschend verbindend. 🏺" },
+  { mood:"Aktiv", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Klettersteig in der Sächsischen Schweiz", venue:"Sächsische Schweiz", when:"Saison",
+    text:"Für die Mutigen: gesicherte Eisentritte am Fels, oben die Belohnung mit Aussicht. Vertrauen üben, wörtlich." },
+  { mood:"Kulinarisch", budget:2, place:"drinnen", time:"abends", live:false, title:"Schokoladen-Verkostung", venue:"Camondas / Schokoladenladen", when:"jederzeit",
+    text:"Edelschokoladen aus aller Welt blind testen und bewerten. Süß, ein bisschen nerdig, garantiert gut gelaunt. 🍫" },
+  { mood:"Kulinarisch", budget:1, place:"draußen", time:"abends", live:false, title:"Foodtrucks an der Scheune", venue:"Alaunstraße / Scheune", when:"abends",
+    text:"Quer durch die Küchen der Welt schlemmen, draußen sitzen, Leute beobachten. Locker und voller Gesprächsstoff." },
+  { mood:"Kulinarisch", budget:2, place:"drinnen", time:"abends", live:false, title:"Sächsisch fine dining", venue:"Restaurant in der Altstadt", when:"besondere Anlässe",
+    text:"Regionale Küche neu gedacht, mehrere kleine Gänge, viel Zeit. Für den Abend, an dem es etwas zu feiern gibt." },
+  { mood:"Entspannt", budget:0, place:"drinnen", time:"flexibel", live:false, title:"Bibliotheks-Date im Kulturpalast", venue:"Zentralbibliothek", when:"Öffnungszeiten",
+    text:"Jeder sucht dem anderen ein Buch, dann lesen, leise quatschen, Blick über die Stadt. Ruhig und richtig gemütlich. 📚" },
+  { mood:"Entspannt", budget:1, place:"draußen", time:"abends", live:false, title:"Lagerfeuer-Stimmung am Strandbad", venue:"Elbe-Strandbars", when:"Sommerabende",
+    text:"Liegestuhl, Sand, ein Getränk, Blick aufs Wasser. Die Füße eingraben und einfach nichts müssen. 🏖️" },
+  { mood:"Entspannt", budget:1, place:"drinnen", time:"abends", live:false, title:"Vinyl-Abend & zwei Kopfhörer", venue:"Plattenbar / zuhause", when:"jederzeit",
+    text:"Alben auflegen, die der andere noch nie gehört hat, und zusammen lauschen. Musik sagt manchmal mehr als Worte. 🎧" },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Barockgarten Großsedlitz", venue:"Heidenau", when:"Saison",
+    text:"Versteckter Barockgarten mit Terrassen und Orangerie — fast immer menschenleer und herrlich zum Schlendern." },
+  { mood:"Ausflug", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Heißluft-Frühstück über dem Elbtal", venue:"Start je nach Wind", when:"wetterabhängig",
+    text:"Früh aufstehen, abheben, das Elbtal von oben sehen, danach Sekt-Frühstück. Das ganz große Romantik-Besteck. 🎈" },
+  { mood:"Ausflug", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Sonnenaufgangs-Wanderung auf den Lilienstein", venue:"Sächsische Schweiz", when:"klare Tage",
+    text:"Im Dunkeln los, oben den Sonnenaufgang über dem Elbbogen erleben. Anstrengend, kitschig schön, unvergesslich. 🌄" },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Karl-May-Spiele in Radebeul", venue:"Felsenbühne Rathen / Radebeul", when:"Sommer",
+    text:"Open-Air-Theater mit Pferden und Lagerfeuer-Romantik. Ein bisschen Abenteuer, ein bisschen Nostalgie." },
 ];
 
 const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","Ausflug"];
@@ -953,7 +1001,14 @@ const MOTIFS = {
   stars:{label:"Sterne",fn:starsSVG,glyph:"✦"},
   swans:{label:"Schwäne",fn:swansSVG,glyph:"♥"},
 };
-const THEMES = { night:"Elbe bei Nacht", rose:"Rosé", forest:"Lindengrün" };
+const THEMES = {
+  night:    { label:"Elbe bei Nacht", grad:"linear-gradient(160deg,#1c2a3a,#2f4257)", glyphs:["✦","✧","·","♥"], mood:"für einen Abend unter Sternen" },
+  rose:     { label:"Rosé",           grad:"linear-gradient(160deg,#7e4034,#c98a76)", glyphs:["🌸","♥","✿","💕"], mood:"für einen Tag voller Schmetterlinge" },
+  forest:   { label:"Lindengrün",     grad:"linear-gradient(160deg,#2c4233,#6f7d5e)", glyphs:["🍃","❀","✿","🌿"], mood:"für ein Date im Grünen" },
+  sunset:   { label:"Sonnenuntergang",grad:"linear-gradient(160deg,#8a3a52,#d98a5a)", glyphs:["☀","✦","♥","✧"], mood:"für die goldene Stunde zu zweit" },
+  lavender: { label:"Lavendel",       grad:"linear-gradient(160deg,#4a3b6b,#9a86b8)", glyphs:["✦","🌷","✧","♥"], mood:"für einen verträumten Abend" },
+  ocean:    { label:"Elbwasser",      grad:"linear-gradient(160deg,#13414a,#3f8a8f)", glyphs:["✦","♥","∿","✧"], mood:"für einen Moment am Wasser" },
+};
 
 /* Motiv-Buttons */
 const motifsEl = $("#motifs");
@@ -977,16 +1032,16 @@ function miniMotif(key) {
 
 /* Farbwelt-Buttons */
 const themesEl = $("#themes");
-const THEME_PREVIEW = { night:"linear-gradient(160deg,#1c2a3a,#2f4257)", rose:"linear-gradient(160deg,#7e4034,#c98a76)", forest:"linear-gradient(160deg,#2c4233,#6f7d5e)" };
-Object.entries(THEMES).forEach(([key, label]) => {
+Object.entries(THEMES).forEach(([key, t]) => {
   const b = document.createElement("button");
   b.className = "swatch" + (key === activeTheme ? " active" : "");
-  b.title = label; b.dataset.theme = key;
-  b.innerHTML = `<span style="background:${THEME_PREVIEW[key]}"></span>`;
+  b.title = t.label; b.dataset.theme = key;
+  b.innerHTML = `<span style="background:${t.grad}"></span>`;
   b.onclick = () => {
     activeTheme = key;
     document.querySelectorAll(".swatch").forEach(x => x.classList.toggle("active", x.dataset.theme === key));
     $("#preview").className = "invite-preview theme-" + key;
+    spawnPetals();
   };
   themesEl.appendChild(b);
 });
@@ -1036,13 +1091,14 @@ function spawnPetals() {
   const wrap = $("#petals");
   wrap.innerHTML = "";
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const glyph = MOTIFS[activeMotif].glyph;
-  for (let i = 0; i < 14; i++) {
+  const theme = THEMES[activeTheme] || THEMES.night;
+  const pool = [MOTIFS[activeMotif].glyph, ...theme.glyphs];
+  for (let i = 0; i < 16; i++) {
     const s = document.createElement("span");
     s.className = "petal";
-    s.textContent = glyph;
+    s.textContent = pool[Math.floor(Math.random() * pool.length)];
     s.style.left = Math.random() * 100 + "%";
-    s.style.fontSize = (12 + Math.random() * 14) + "px";
+    s.style.fontSize = (11 + Math.random() * 15) + "px";
     s.style.color = ["#e0b09e","#caa05a","#f4ece0"][Math.floor(Math.random()*3)];
     s.style.animationDuration = (5 + Math.random() * 5) + "s";
     s.style.animationDelay = -(Math.random() * 6) + "s";
@@ -1159,14 +1215,15 @@ function heartBurst(x, y, count = 18) {
 function showReceived(d) {
   const rv = $("#receive");
   rv.className = "receive open theme-" + (THEMES[d.th] ? d.th : "night");
-  /* schwebende Herzchen im Hintergrund */
+  /* schwebende Symbole im Hintergrund — passend zu Motiv und Farbwelt */
   const hearts = $("#rvHearts");
   hearts.innerHTML = "";
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const glyph = (MOTIFS[d.mo] || MOTIFS.heart).glyph;
-    for (let i = 0; i < 18; i++) {
+    const theme = THEMES[d.th] || THEMES.night;
+    const pool = [(MOTIFS[d.mo] || MOTIFS.heart).glyph, ...theme.glyphs, "♥"];
+    for (let i = 0; i < 20; i++) {
       const s = document.createElement("span");
-      s.textContent = Math.random() < .6 ? glyph : "♥";
+      s.textContent = pool[Math.floor(Math.random() * pool.length)];
       s.style.left = Math.random() * 100 + "%";
       s.style.fontSize = (13 + Math.random() * 16) + "px";
       s.style.color = ["#f4ece0","#e0b09e","#caa05a"][Math.floor(Math.random()*3)];
@@ -1192,6 +1249,7 @@ function showReceived(d) {
   $("#envelope").onkeydown = e => { if (e.key === "Enter" || e.key === " ") openEnv(); };
 
   $("#rvName").textContent = d.n || "dich";
+  $("#rvMood").textContent = "✦ " + ((THEMES[d.th] || THEMES.night).mood) + " ✦";
   $("#rvMsg").textContent = d.m || (d.t ? "Lust auf: " + d.t + "?" : "Lust auf ein Date in Dresden?");
   $("#rvDetail").innerHTML = d.t
     ? `<b>${esc(d.t)}</b><br>📍 ${esc(d.v)}${(d.w || d.d) ? " · 🗓 " + esc(d.w || d.d) : ""}`
