@@ -51,7 +51,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .dc-body{padding:12px 18px 18px;flex:1;display:flex;flex-direction:column}
 .dc-body h3{font-family:'Fraunces',serif;font-size:21px;font-weight:600;line-height:1.15;margin-bottom:8px}
 .dc-body p{font-size:14.5px;color:var(--elbe-soft);font-weight:300;flex:1}
-.dc-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+.dc-twist{font-size:13px;color:var(--rose-deep);font-style:italic;margin-top:10px;font-weight:300}
+.dc-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)}
 .dc-meta span{display:flex;align-items:center;gap:5px}
 .dc-actions{display:flex;gap:8px;padding:0 18px 18px}
 .btn{border-radius:11px;padding:10px 14px;font-size:14px;font-weight:500;transition:all .2s;flex:1;text-align:center}
@@ -305,6 +306,91 @@ const IDEAS = [
     text:"Mit der historischen Straßenbahn durchs Tal zum Lichtenhainer Wasserfall, kleine Wanderung, Einkehr. Entschleunigung pur." },
   { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Schlosspark Pillnitz", venue:"Schloss & Park Pillnitz", when:"täglich",
     text:"Weinberg, Kamelie, Elbblick — der schönste Schlosspark der Gegend. Mit Fähre oder Dampfer anreisen macht's komplett." },
+
+  /* ---- erweiterter Pool ---- */
+  { mood:"Romantisch", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Sonnenaufgang mit Thermoskanne", venue:"Elbwiesen, Königsufer", when:"früh, aber wert",
+    text:"Kaffee einpacken, die Stadt wachen sehen, bevor sie laut wird. Wer das mitmacht, meint es ernst." },
+  { mood:"Romantisch", budget:1, place:"draußen", time:"abends", live:false, title:"Nachtwächter-Rundgang durch die Altstadt", venue:"Treffpunkt Altstadt", when:"abends, ganzjährig",
+    text:"Mit Laterne und Anekdoten durch die beleuchteten Gassen — Gänsehaut-Geschichten inklusive Händchenhalten-Gelegenheit." },
+  { mood:"Romantisch", budget:0, place:"draußen", time:"flexibel", live:false, title:"Foto-Date: 10 Bilder vom anderen", venue:"eure Lieblingsecken", when:"jederzeit",
+    text:"Jeder macht zehn Handyfotos — vom anderen und von der Stadt. Am Ende wird das Lieblingsbild gekürt. Kostet nichts, bleibt ewig." },
+  { mood:"Romantisch", budget:1, place:"drinnen", time:"abends", live:false, title:"Tanz-Schnupperstunde", venue:"Tanzschulen der Stadt", when:"Kurstermine",
+    text:"Walzer oder Salsa, auf jeden Fall aneinander vorbei stolpern und lachen. Näher kommt man sich selten so elegant." },
+  { mood:"Romantisch", budget:1, place:"draußen", time:"abends", live:false, title:"Konzertplatz Weißer Hirsch", venue:"Waldpark, Weißer Hirsch", when:"Sommerkonzerte",
+    text:"Open-Air-Bühne im Grünen oberhalb der Stadt — Musik, Bäume, Abendlicht. Mit der Standseilbahn anreisen macht's perfekt." },
+  { mood:"Romantisch", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Ballonfahrt über das Elbtal", venue:"Startplätze rund um Dresden", when:"wetterabhängig",
+    text:"Einmal schweben statt gehen: Elbe, Schlösser und Weinberge von oben. Das große Besteck für besondere Anlässe." },
+  { mood:"Romantisch", budget:0, place:"draußen", time:"flexibel", live:false, title:"Überraschungsstunde", venue:"geheim", when:"wann ihr wollt",
+    text:"Jeder plant heimlich eine Stunde für den anderen — Ort, Snack, Programm. Zwei Mini-Dates in einem, null Erwartungsdruck." },
+
+  { mood:"Kultur", budget:2, place:"drinnen", time:"tagsüber", live:false, title:"Grünes Gewölbe", venue:"Residenzschloss", when:"Zeitfenster buchen",
+    text:"Augusts Schatzkammer — so viel Glanz auf so wenig Raum gibt es nirgends. Danach habt ihr Gesprächsstoff für Stunden." },
+  { mood:"Kultur", budget:2, place:"drinnen", time:"tagsüber", live:false, title:"Sixtinische Madonna besuchen", venue:"Gemäldegalerie Alte Meister, Zwinger", when:"Di–So",
+    text:"Die berühmtesten Engel der Welt live — und der Zwingerhof als Kulisse für den Spaziergang danach." },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"tagsüber", live:false, title:"Hygiene-Museum entdecken", venue:"Deutsches Hygiene-Museum", when:"Di–So",
+    text:"Klingt sperrig, ist eines der spannendsten Museen Deutschlands: Mensch, Körper, Gesellschaft. Ideal für lange Gespräche." },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"abends", live:false, title:"Kabarett in der Herkuleskeule", venue:"Kulturpalast", when:"Spielplan",
+    text:"Sächsischer Witz, scharfe Zunge, gemeinsames Lachen — der schnellste Weg, sich sympathisch zu finden." },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"abends", live:false, title:"Poetry Slam-Abend", venue:"wechselnde Bühnen", when:"regelmäßig",
+    text:"Junge Texte, lautes Publikum, ihr stimmt mit ab. Danach streiten, wer hätte gewinnen müssen." },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"abends", live:false, title:"Programmkino in der Schauburg", venue:"Königsbrücker Straße", when:"täglich",
+    text:"Plüschsessel, Filme abseits des Blockbuster-Einerlei, danach ein Glas in der Neustadt. Kino, wie es sein soll." },
+  { mood:"Kultur", budget:1, place:"drinnen", time:"tagsüber", live:false, title:"Technische Sammlungen & Turmblick", venue:"Junghansstraße", when:"Di–So",
+    text:"Zum Anfassen gebaute Wissenschaft und oben ein Rundblick über die Stadt. Spielerischer als jedes klassische Museum." },
+  { mood:"Kultur", budget:2, place:"drinnen", time:"tagsüber", live:false, title:"Semperoper hinter den Kulissen", venue:"Führung, Theaterplatz", when:"täglich Führungen",
+    text:"Einmal dahin, wo sonst nur die Sänger dürfen. Und ihr wisst danach, wo ihr beim nächsten Opernbesuch sitzt." },
+
+  { mood:"Aktiv", budget:2, place:"drinnen", time:"flexibel", live:false, title:"Escape Room knacken", venue:"Innenstadt & Neustadt", when:"täglich",
+    text:"60 Minuten, ein Raum, zwei Köpfe. Wie ihr unter Druck zusammenarbeitet, verrät mehr als zehn Restaurant-Dates." },
+  { mood:"Aktiv", budget:0, place:"draußen", time:"flexibel", live:false, title:"Tischtennis im Alaunpark", venue:"Alaunpark, Neustadt", when:"Schläger mitbringen",
+    text:"Platte schnappen, Rundlauf mit wildfremden Mitspielern, danach Spritz vom Späti. Neustadt-Sommer in Reinform." },
+  { mood:"Aktiv", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Radtour zu den Weinbergen", venue:"Elbradweg → Radebeul", when:"bei gutem Wetter",
+    text:"Linkselbisch raus, durch die Weinberge zurück — mit Pause auf einer Winzerterrasse. Sportlich mit Belohnung." },
+  { mood:"Aktiv", budget:1, place:"drinnen", time:"abends", live:false, title:"Bowling-Abend", venue:"Bowlingbahnen der Stadt", when:"täglich",
+    text:"Leihschuhe, Strikes, Niederlagen mit Stil. Retro genug, um charmant zu sein, kompetitiv genug für Funkenflug." },
+  { mood:"Aktiv", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Hochseilgarten bei Moritzburg", venue:"Kletterwald Moritzburg", when:"Saison",
+    text:"Zwischen Baumwipfeln balancieren und sich gegenseitig Mut zurufen. Adrenalin verbindet — wissenschaftlich erwiesen." },
+  { mood:"Aktiv", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Beachvolleyball am Elbufer", venue:"Beachfelder der Stadt", when:"Sommer",
+    text:"Sand zwischen den Zehen mitten in Sachsen. Zwei gegen zwei mit Freunden oder einfach baggern üben — wörtlich." },
+
+  { mood:"Kulinarisch", budget:1, place:"drinnen", time:"tagsüber", live:false, title:"Der große Eierschecke-Test", venue:"Altstadt- & Neustadt-Cafés", when:"jederzeit",
+    text:"Sachsens süßestes Kulturgut in drei Cafés vergleichen. Streng wissenschaftlich, versteht sich. Mit Punktekarte." },
+  { mood:"Kulinarisch", budget:1, place:"drinnen", time:"abends", live:false, title:"Brauhaus-Abend bei Watzke", venue:"Pieschen / Goldener Reiter", when:"täglich",
+    text:"Selbstgebrautes Bier, deftige Küche, Elbblick am Pieschener Hafen. Bodenständig und gemütlich." },
+  { mood:"Kulinarisch", budget:2, place:"drinnen", time:"abends", live:false, title:"Kochkurs zu zweit", venue:"Kochschulen der Stadt", when:"Kurstermine",
+    text:"Pasta, Sushi oder Sächsisch modern — zusammen schnippeln, anrichten, aufessen. Teamwork mit Genuss-Garantie." },
+  { mood:"Kulinarisch", budget:1, place:"draußen", time:"abends", live:false, title:"Käse, Wein & Weinberg-Blick", venue:"Weinberge Radebeul", when:"Sommerabende",
+    text:"Beim Käseladen eindecken, in die Reben setzen, die Stadt unten liegen lassen. Frankreich-Gefühl, 20 Minuten entfernt." },
+  { mood:"Kulinarisch", budget:1, place:"drinnen", time:"abends", live:false, title:"Ramen-Abend in der Neustadt", venue:"Äußere Neustadt", when:"abends",
+    text:"Dampfende Schüsseln, Schlürfen ausdrücklich erlaubt. Danach Spaziergang zum Verdauen durch die Gassen." },
+  { mood:"Kulinarisch", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Markt-Frühstück auf die Hand", venue:"Wochenmärkte der Stadt", when:"Markttage",
+    text:"Über den Markt treiben lassen, hier eine Erdbeere, da ein Stück Käse probieren. Frühstück als Schnitzeljagd." },
+
+  { mood:"Entspannt", budget:2, place:"drinnen", time:"flexibel", live:false, title:"Saunatag zu zweit", venue:"Saunalandschaften der Stadt", when:"ganzjährig",
+    text:"Aufguss, Ruheraum, Tee — und das Handy bleibt im Spind. Der offizielle Reset-Knopf für Verliebte." },
+  { mood:"Entspannt", budget:1, place:"drinnen", time:"tagsüber", live:false, title:"Buchladen-Wichteln", venue:"unabhängige Buchläden", when:"jederzeit",
+    text:"Jeder sucht dem anderen heimlich ein Buch unter zehn Euro. Beim Kaffee danach wird ausgepackt und erklärt, warum." },
+  { mood:"Entspannt", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Sonntagsrunde durch die Dresdner Heide", venue:"Dresdner Heide", when:"ganzjährig",
+    text:"Wald direkt an der Stadt — eine Stunde Grün, Vogelgezwitscher und ein Gespräch, das einfach läuft." },
+  { mood:"Entspannt", budget:1, place:"drinnen", time:"tagsüber", live:false, title:"Plattenladen & Kaffee", venue:"Neustadt-Plattenläden", when:"jederzeit",
+    text:"Durch Vinylkisten wühlen, sich gegenseitig Lieblingsalben zeigen, eins mitnehmen. Der Soundtrack zum Date inklusive." },
+  { mood:"Entspannt", budget:0, place:"draußen", time:"tagsüber", live:true, title:"Yoga unter freiem Himmel", venue:"Palais Sommer", when:"Festival-Programm",
+    text:"Kostenlose Open-Air-Sessions im Festivalprogramm — Matte mitbringen, runterkommen, danach Limo in der Sonne." },
+  { mood:"Entspannt", budget:0, place:"draußen", time:"flexibel", live:false, title:"Hängematten-Nachmittag", venue:"Alaunpark", when:"Sommer",
+    text:"Hängematte zwischen zwei Bäume, ein Podcast, zwei Kopfhörer. Nichtstun, aber zusammen." },
+
+  { mood:"Ausflug", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Festung Königstein", venue:"Sächsische Schweiz", when:"ganzjährig",
+    text:"Europas größte Bergfestung mit Panorama über das ganze Elbtal. Geschichte plus Fernblick plus Festungsbrot." },
+  { mood:"Ausflug", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Malerweg-Etappe ab Stadt Wehlen", venue:"Sächsische Schweiz", when:"S-Bahn + Wanderschuhe",
+    text:"Die Route, die schon Caspar David Friedrich inspirierte. Felsen, Aussichten und unterwegs eine Einkehr." },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Meißen: Albrechtsburg & Altstadt", venue:"Meißen", when:"S-Bahn, 40 min",
+    text:"Deutschlands ältestes Schloss, verwinkelte Gassen, Porzellan und Weinstuben. Ein Tag wie ein Kurzurlaub." },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Mit der Lößnitzgrundbahn nach Moritzburg", venue:"Radebeul Ost → Moritzburg", when:"fährt täglich",
+    text:"Dampflok, offene Wagen, Wald und Teiche — die Anreise ist hier schon das halbe Date." },
+  { mood:"Ausflug", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Tharandter Wald & Forstgarten", venue:"Tharandt", when:"ganzjährig",
+    text:"Der älteste Forstgarten der Welt, Bäche und stille Wege — der Geheimtipp unter den Wald-Ausflügen." },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Badesee-Tag vor der Stadt", venue:"Seen im Dresdner Umland", when:"Hochsommer",
+    text:"Decke, Wassermelone, ein See zum Reinspringen. Sonnencreme gegenseitig auftragen ist eh der eigentliche Plan." },
 ];
 
 const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","Ausflug"];
@@ -336,15 +422,40 @@ function filtered() {
     (p === "" || i.place === p) &&
     (t === "" || i.time === t || i.time === "flexibel"));
 }
+/* Kleine Twists, die zufällig auf die Karten gestreut werden */
+const TWISTS = [
+  "Handys bleiben in der Tasche — Ausnahme: ein gemeinsames Foto.",
+  "Jeder darf unterwegs eine Frage stellen, die ihr euch noch nie gestellt habt.",
+  "Wer zuerst lacht, gibt das nächste Eis aus.",
+  "Nehmt eine Einwegkamera mit — entwickelt wird erst nächste Woche.",
+  "Jeder sucht unterwegs ein Mitbringsel unter 3 €.",
+  "Erzählt euch je eine Geschichte, die der andere garantiert noch nicht kennt.",
+  "Geheime Mission: dem anderen dreimal unauffällig ein Kompliment machen.",
+  "Plant am Ende gemeinsam schon das nächste Date — egal wie das hier läuft.",
+  "Tauscht für eine Stunde die Rollen: der andere entscheidet alles.",
+  "Schreibt euch danach gegenseitig eine Drei-Sätze-Rezension des Dates.",
+  "Sucht unterwegs euer gemeinsames Lieblingsdetail der Stadt.",
+  "Verbot des Wortes „eigentlich“ — bei Verstoß: ein Wunsch frei für den anderen.",
+];
+
 function pick(arr, n) {
   const c = [...arr];
   for (let i = c.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [c[i], c[j]] = [c[j], c[i]]; }
   return c.slice(0, n);
 }
+/* Anti-Wiederholung: zuletzt gezeigte Ideen werden beim nächsten Würfeln gemieden */
+let lastShown = new Set();
+function sample(pool, n) {
+  const fresh = pool.filter(i => !lastShown.has(i.title));
+  const seen = pool.filter(i => lastShown.has(i.title));
+  const chosen = [...pick(fresh, n), ...pick(seen, Math.max(0, n - fresh.length))].slice(0, n);
+  lastShown = new Set(chosen.map(i => i.title));
+  return chosen;
+}
 function renderCards() {
   const pool = filtered();
-  $("#count").textContent = pool.length + " Ideen";
-  const chosen = pick(pool, Math.min(9, pool.length));
+  $("#count").textContent = pool.length + " Ideen im Pool";
+  const chosen = sample(pool, Math.min(9, pool.length));
   $("#cards").innerHTML = chosen.length ? chosen.map((idea, i) => `
     <div class="date-card" style="animation-delay:${i * 55}ms">
       <div class="dc-top">
@@ -354,6 +465,7 @@ function renderCards() {
       <div class="dc-body">
         <h3>${esc(idea.title)}</h3>
         <p>${esc(idea.text)}</p>
+        <div class="dc-twist">✨ ${esc(TWISTS[Math.floor(Math.random() * TWISTS.length)])}</div>
         <div class="dc-meta">
           <span>📍 ${esc(idea.venue)}</span>
           <span>🗓 ${esc(idea.when)}</span>
