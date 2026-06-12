@@ -861,7 +861,7 @@ const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","A
 /* ============================================================
    LIVE-EVENTS — echte Dresdner Termine (Sommer 2026, datiert)
 ============================================================ */
-const EVENTS = [
+let EVENTS = [
   { date:"2026-06-19", end:"2026-06-21", title:"Pirnaer Stadtfest", venue:"Altstadt Pirna", tag:"Stadtfest", free:true, time:"ganztägig",
     text:"Drei Tage Fest in der malerischen Altstadt vor den Toren Dresdens — Musik, Stände und Elbflair. Mit der S-Bahn in 20 Min dort." },
   { date:"2026-06-26", end:"2026-06-28", title:"Elbhangfest – „Rockt den Weber!“", venue:"Loschwitz bis Pillnitz", tag:"Festival", free:true, time:"ganztägig",
@@ -1601,7 +1601,30 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
+/* Live-Events aus der täglich aktualisierten events.json laden und mit der
+   kuratierten Liste mischen. Schlägt der Abruf fehl, bleibt die Liste wie sie ist. */
+const CURATED_EVENTS = EVENTS.slice();
+async function loadLiveEvents() {
+  try {
+    const r = await fetch("events.json?t=" + Date.now());
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.events || !data.events.length) return;
+    // Zusammenführen: kuratierte zuerst, dann Live-Events ohne Titel-Dopplung
+    const seen = new Set(CURATED_EVENTS.map(e => e.title.toLowerCase().slice(0, 24) + "|" + e.date));
+    const merged = CURATED_EVENTS.slice();
+    for (const e of data.events) {
+      const key = (e.title || "").toLowerCase().slice(0, 24) + "|" + e.date;
+      if (e.title && e.date && !seen.has(key)) { seen.add(key); merged.push(e); }
+    }
+    EVENTS = merged;
+    renderEvents();
+    console.log(`Live-Events geladen: ${data.events.length} (Stand ${data.updated || "?"})`);
+  } catch { /* offline o. Ä. — kuratierte Liste bleibt */ }
+}
+
 renderEvents();
+loadLiveEvents();
 renderCards();
 </script>
 </body>
