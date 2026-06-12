@@ -78,6 +78,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .event-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(42,36,51,.13)}
 .event-card::after{content:"♥";position:absolute;right:-6px;bottom:-10px;font-size:54px;color:var(--rose);opacity:.07}
 .ev-date{display:inline-flex;align-items:baseline;gap:6px;background:var(--rose);color:#fff;border-radius:10px;padding:4px 9px;font-size:13px;font-weight:600;margin-bottom:10px}
+.ev-date.soon{background:var(--rose-deep);animation:soonPulse 1.8s ease-in-out infinite}
+@keyframes soonPulse{0%,100%{box-shadow:0 0 0 0 rgba(169,97,76,.5)}50%{box-shadow:0 0 0 7px rgba(169,97,76,0)}}
 .ev-date .cd{font-size:11px;opacity:.85;font-weight:500}
 .ev-tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--rose-deep);font-weight:600;margin-left:8px}
 .ev-free{font-size:11px;font-weight:600;color:var(--leaf);margin-left:6px}
@@ -322,6 +324,8 @@ textarea{resize:vertical;min-height:64px}
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
 .rv-card .preview-art{width:185px;height:185px;margin:0 auto 14px}
+.rv-greeting{font-family:'Fraunces',serif;font-size:15px;font-style:italic;opacity:.75;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px;animation:greetGlow 2.5s ease-in-out infinite}
+@keyframes greetGlow{0%,100%{opacity:.55}50%{opacity:.95}}
 .rv-name{font-family:'Fraunces',serif;font-size:36px;font-weight:600;font-style:italic;margin:4px 0 8px;animation:nameBounce .9s cubic-bezier(.2,1.4,.4,1) .3s both}
 .rv-mood{font-size:13px;letter-spacing:.14em;text-transform:lowercase;opacity:.7;margin-bottom:14px;font-style:italic;animation:cardReveal .6s ease .5s both}
 @keyframes nameBounce{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
@@ -552,6 +556,7 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
   </div>
 
   <div class="rv-card" id="rvCard">
+    <div class="rv-greeting" id="rvGreeting">Für dich ✨</div>
     <div class="preview-art" id="rvArt"></div>
     <div class="preview-to">Von Herzen — für</div>
     <div class="rv-name" id="rvName">dich</div>
@@ -821,6 +826,34 @@ const IDEAS = [
     text:"Im Dunkeln los, oben den Sonnenaufgang über dem Elbbogen erleben. Anstrengend, kitschig schön, unvergesslich. 🌄" },
   { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Karl-May-Spiele in Radebeul", venue:"Felsenbühne Rathen / Radebeul", when:"Sommer",
     text:"Open-Air-Theater mit Pferden und Lagerfeuer-Romantik. Ein bisschen Abenteuer, ein bisschen Nostalgie." },
+
+  /* ---- Dresdner Umland ---- */
+  { mood:"Ausflug", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Weingut Proschwitz bei Meißen", venue:"Schloss Proschwitz", when:"Saison",
+    text:"Sachsens ältestes privates Weingut: durch die Reben spazieren, im Gutsgarten ein Glas teilen, das Leben feiern. 🍷" },
+  { mood:"Ausflug", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Wildgehege Moritzburg", venue:"Moritzburg", when:"ganzjährig",
+    text:"Hirsche, Elche und Waschbären beim Fressen beobachten, dazu Wald und Ruhe. Ein Ausflug, der ganz entschleunigt. 🦌" },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Altstadtbummel durch Pirna", venue:"Pirna", when:"jederzeit",
+    text:"„Tor zur Sächsischen Schweiz“: verwinkelte Gassen, Marktplatz, Canaletto-Blick. Charmant und herrlich unaufgeregt." },
+  { mood:"Ausflug", budget:0, place:"draußen", time:"tagsüber", live:false, title:"Wanderung durch den Zschoner Grund", venue:"westlich von Dresden", when:"ganzjährig",
+    text:"Grünes Tal mit Bach und Mühle, fast direkt vor der Stadt. Leicht, ruhig, am Ende Einkehr in der Zschoner Mühle." },
+  { mood:"Ausflug", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Albrechtsburg & Dom in Meißen", venue:"Meißen", when:"ganzjährig",
+    text:"Deutschlands ältestes Schloss hoch über der Altstadt, dazu Porzellan und Weinstuben. Ein Tag wie ein Kurzurlaub." },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Hengstparade im Landgestüt Moritzburg", venue:"Landesgestüt Moritzburg", when:"September",
+    text:"Edle Pferde, historische Kutschen, Festatmosphäre. Ein außergewöhnliches Date-Erlebnis für besondere Tage. 🐴" },
+  { mood:"Ausflug", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Seiffen im Erzgebirge", venue:"Seiffen", when:"ganzjährig",
+    text:"Das Spielzeugdorf der Räuchermännchen und Pyramiden — verträumt, handgemacht, ein bisschen wie eine Zeitreise." },
+  { mood:"Ausflug", budget:2, place:"draußen", time:"tagsüber", live:false, title:"Tagestrip nach Prag", venue:"Prag", when:"ganzjährig",
+    text:"In zwei Stunden in der goldenen Stadt: Karlsbrücke, Altstadt, Kaffeehäuser. Das große Abenteuer für ein langes Date. ✨" },
+  { mood:"Aktiv", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Kahnfahrt durch den Spreewald", venue:"Spreewald", when:"Saison",
+    text:"Mit dem Kahn durch verträumte Wasserkanäle gleiten, Gurken naschen, treiben lassen. Ruhe pur, gut eine Stunde entfernt. 🛶" },
+  { mood:"Romantisch", budget:2, place:"draußen", time:"abends", live:false, title:"Sonnenuntergang an der Talsperre Malter", venue:"Dippoldiswalde", when:"Sommerabende",
+    text:"Ein See im Grünen, Boot oder Steg, der Himmel färbt sich orange. Mitnehmen: Picknick und Lieblingsmensch. 🌅" },
+  { mood:"Entspannt", budget:2, place:"drinnen", time:"flexibel", live:false, title:"Therme & Sauna in der Toskana Therme", venue:"Bad Schandau", when:"ganzjährig",
+    text:"Warmes Wasser mit Blick auf die Felsen, Lichtklangkonzert im Liquid Sound Tempel. Schweben, treiben, abschalten." },
+  { mood:"Aktiv", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Raddampfer-Tour nach Bad Schandau", venue:"Elbe → Bad Schandau", when:"Saison",
+    text:"Mit der Weißen Flotte tief in die Sächsische Schweiz schippern, vorbei an Felsen und Kurorten. Reisen wie früher. ⚓" },
+  { mood:"Romantisch", budget:1, place:"draußen", time:"tagsüber", live:false, title:"Barockgarten Großsedlitz", venue:"Heidenau", when:"Saison",
+    text:"Versteckter Barockgarten mit Terrassen und Orangerie — fast immer menschenleer und herrlich zum Händchenhalten." },
 ];
 
 const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","Ausflug"];
@@ -829,28 +862,34 @@ const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","A
    LIVE-EVENTS — echte Dresdner Termine (Sommer 2026, datiert)
 ============================================================ */
 const EVENTS = [
-  { date:"2026-06-26", end:"2026-06-28", title:"Elbhangfest – „Rockt den Weber!“", venue:"Loschwitz bis Pillnitz", tag:"Festival", free:true,
+  { date:"2026-06-19", end:"2026-06-21", title:"Pirnaer Stadtfest", venue:"Altstadt Pirna", tag:"Stadtfest", free:true, time:"ganztägig",
+    text:"Drei Tage Fest in der malerischen Altstadt vor den Toren Dresdens — Musik, Stände und Elbflair. Mit der S-Bahn in 20 Min dort." },
+  { date:"2026-06-26", end:"2026-06-28", title:"Elbhangfest – „Rockt den Weber!“", venue:"Loschwitz bis Pillnitz", tag:"Festival", free:true, time:"ganztägig",
     text:"Drei Tage Fest am Elbhang mit Musik, Kunst und Ständen — Eintritt frei. Treibenlassen und gemeinsam entdecken." },
-  { date:"2026-06-20", end:"2026-07-26", title:"Palais Sommer am Neumarkt", venue:"vor der Frauenkirche", tag:"Festival", free:true,
+  { date:"2026-06-20", end:"2026-07-26", title:"Palais Sommer am Neumarkt", venue:"vor der Frauenkirche", tag:"Festival", free:true, time:"ab 16 Uhr",
     text:"Eintrittsfreies Kulturfestival: Konzerte, Tanz, Yoga und Lesungen unter freiem Himmel. Perfekt zum spontanen Bleiben." },
-  { date:"2026-06-25", end:"2026-08-30", title:"Filmnächte am Elbufer", venue:"Königsufer", tag:"Open-Air-Kino",
+  { date:"2026-06-25", end:"2026-08-30", title:"Filmnächte am Elbufer", venue:"Königsufer", tag:"Open-Air-Kino", time:"Einlass ab 20 Uhr",
     text:"Deutschlands größtes Freiluftkino mit Konzerten — Film, Decke, die Frauenkirche im Rücken." },
-  { date:"2026-07-24", title:"Blond – „Ich träum doch nur von Liebe“", venue:"Konzertplatz Weißer Hirsch", tag:"Konzert",
-    text:"Indie-Pop unter Bäumen oberhalb der Stadt. Ein lauer Abend, der den Bandnamen zum Date-Motto macht." },
-  { date:"2026-07-25", title:"Dresdner Schlössernacht", venue:"Elbschlösser", tag:"Lichtkunst",
-    text:"Musik, Lichtkunst und Walking Acts an den drei Elbschlössern. Eine der romantischsten Nächte des Sommers." },
-  { date:"2026-07-20", title:"Vivaldis Vier Jahreszeiten im Zwinger", venue:"Wallpavillon, Zwinger", tag:"Klassik",
+  { date:"2026-07-20", title:"Vivaldis Vier Jahreszeiten im Zwinger", venue:"Wallpavillon, Zwinger", tag:"Klassik", time:"20 Uhr",
     text:"Das Dresdner Residenz Orchester im Zwingerhof — Gänsehaut zwischen barocken Fassaden unter Abendhimmel." },
-  { date:"2026-07-31", end:"2026-08-08", title:"Kaisermania", venue:"Filmnächte-Gelände", tag:"Konzert",
-    text:"Roland Kaiser an vier Abenden, mit tausenden Zaungästen auf den Elbwiesen. Mitsingen oder von außen lauschen." },
-  { date:"2026-08-21", title:"Wincent Weiss – Sommertour", venue:"Filmnächte am Elbufer", tag:"Konzert",
+  { date:"2026-07-24", title:"Blond – „Ich träum doch nur von Liebe“", venue:"Konzertplatz Weißer Hirsch", tag:"Konzert", time:"19:30 Uhr",
+    text:"Indie-Pop unter Bäumen oberhalb der Stadt. Ein lauer Abend, der den Bandnamen zum Date-Motto macht." },
+  { date:"2026-07-25", title:"Dresdner Schlössernacht", venue:"Elbschlösser", tag:"Lichtkunst", time:"ab 18 Uhr",
+    text:"Musik, Lichtkunst und Walking Acts an den drei Elbschlössern. Eine der romantischsten Nächte des Sommers." },
+  { date:"2026-07-31", end:"2026-08-08", title:"Kaisermania", venue:"Filmnächte-Gelände", tag:"Konzert", time:"19 Uhr",
+    text:"Roland Kaiser an mehreren Abenden, mit tausenden Zaungästen auf den Elbwiesen. Mitsingen oder von außen lauschen." },
+  { date:"2026-08-07", end:"2026-08-23", title:"Moritzburg Festival für Kammermusik", venue:"Schloss Moritzburg", tag:"Klassik",
+    text:"Hochkarätige Kammermusik im märchenhaften Wasserschloss bei Jan Vogler. Ein Ausflug, der Kultur und Romantik verbindet." },
+  { date:"2026-08-21", title:"Wincent Weiss – Sommertour", venue:"Filmnächte am Elbufer", tag:"Konzert", time:"20 Uhr",
     text:"Deutschpop am Elbufer mit Frauenkirche-Kulisse — Songs zum Mitsingen und Händchenhalten." },
-  { date:"2026-08-22", title:"Clueso open air", venue:"Filmnächte am Elbufer", tag:"Konzert",
+  { date:"2026-08-22", title:"Clueso open air", venue:"Filmnächte am Elbufer", tag:"Konzert", time:"20 Uhr",
     text:"Der Erfurter mit seinen Sommerhits direkt am Wasser. Lichterketten, warme Luft, gute Stimmung." },
-  { date:"2026-08-28", title:"Tocotronic live", venue:"Tante JU", tag:"Konzert",
+  { date:"2026-08-28", title:"Tocotronic live", venue:"Tante JU", tag:"Konzert", time:"20 Uhr",
     text:"Indie-Legenden in intimem Rahmen. Für alle, deren Liebessprache aus klugen Songtexten besteht." },
-  { date:"2026-09-05", title:"Elbzauber – Open-Air auf der Elbe", venue:"auf der Elbe", tag:"Open-Air", free:true,
+  { date:"2026-09-05", title:"Elbzauber – Open-Air auf der Elbe", venue:"auf der Elbe", tag:"Open-Air", free:true, time:"abends",
     text:"Maritimes Abend-Event auf dem Fluss. Lichter auf dem Wasser, die Stadt als Kulisse — pure Romantik." },
+  { date:"2026-09-12", title:"Pirnaer Weinfest", venue:"Altstadt Pirna", tag:"Weinfest", free:true, time:"ab mittags",
+    text:"Sächsischer Wein, Livemusik und Altstadtgassen. Ein gemütlicher Spätsommertag zu zweit, ganz ohne Hektik." },
 ];
 const BUDGET_LABEL = ["kostenlos","€","€€"];
 let activeMood = "Alle";
@@ -915,12 +954,18 @@ function dateLabel(iso) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
 }
+const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+function weekdayLabel(iso) {
+  return WD[new Date(iso + "T00:00:00").getDay()];
+}
 function countdown(iso) {
   const days = Math.ceil((new Date(iso + "T00:00:00") - new Date()) / 86400000);
-  if (days < 0) return "läuft";
-  if (days === 0) return "heute!";
-  if (days === 1) return "morgen";
+  if (days < 0) return "läuft gerade";
+  if (days === 0) return "heute! 🎉";
+  if (days === 1) return "schon morgen";
+  if (days <= 7) return "in " + days + " Tagen";
   if (days <= 14) return "in " + days + " T";
+  if (days <= 21) return "in " + Math.round(days/7) + " Wochen";
   return "";
 }
 function renderEvents() {
@@ -931,13 +976,16 @@ function renderEvents() {
   if (!upcoming.length) { el.parentElement.querySelectorAll('.section-label,.section-sub')[0].style.display = "none"; el.style.display = "none"; return; }
   el.innerHTML = upcoming.map((e, i) => {
     const cd = countdown(e.date);
-    const range = e.end ? dateLabel(e.date) + "–" + dateLabel(e.end) : dateLabel(e.date);
+    const range = e.end
+      ? weekdayLabel(e.date) + " " + dateLabel(e.date) + "–" + dateLabel(e.end)
+      : weekdayLabel(e.date) + " " + dateLabel(e.date);
+    const soon = cd.includes("heute") || cd.includes("morgen") || cd.includes("Tagen");
     return `<div class="event-card" data-ev="${i}" style="animation-delay:${i*50}ms">
-      <span class="ev-date">🗓 ${range}${cd ? ` <span class="cd">${cd}</span>` : ""}</span>
+      <span class="ev-date${soon ? " soon" : ""}">🗓 ${range}${cd ? ` <span class="cd">${cd}</span>` : ""}</span>
       <span class="ev-tag">${esc(e.tag)}</span>${e.free ? '<span class="ev-free">gratis</span>' : ""}
       <h4>${esc(e.title)}</h4>
       <p>${esc(e.text)}</p>
-      <div class="ev-where">📍 ${esc(e.venue)}</div>
+      <div class="ev-where">📍 ${esc(e.venue)}${e.time ? ` · 🕐 ${esc(e.time)}` : ""}</div>
       <button class="ev-invite" data-ev="${i}">Dazu einladen ✦</button>
     </div>`;
   }).join("");
@@ -948,14 +996,24 @@ function renderEvents() {
 }
 /* Event als „Idee“ in den Einladungs-Editor übergeben */
 function openInviteEvent(e) {
-  currentIdea = { title: e.title, venue: e.venue, when: e.end ? dateLabel(e.date) + "–" + dateLabel(e.end) : dateLabel(e.date) + ".2026" };
+  const when = (e.end ? weekdayLabel(e.date) + " " + dateLabel(e.date) + "–" + dateLabel(e.end) : weekdayLabel(e.date) + ", " + dateLabel(e.date) + ".2026") + (e.time ? " · " + e.time : "");
+  currentIdea = { title: e.title, venue: e.venue, when };
   $("#formFor").textContent = "Für: " + e.title;
-  $("#when").placeholder = "z. B. " + currentIdea.when;
+  $("#when").placeholder = "z. B. " + when;
+  // Passendes Theme je nach Event-Art
   if (e.tag === "Lichtkunst" || e.title.includes("Schlössernacht") || e.title.includes("Elbzauber")) activeTheme = "night";
+  else if (e.tag === "Weinfest" || e.tag === "Stadtfest") activeTheme = "sunset";
+  else if (e.tag === "Klassik") activeTheme = "lavender";
+  syncThemeUI();
+  renderMsgSuggestions(currentIdea);
   $("#overlay").classList.add("open");
-  // Events sind nicht im IDEAS-Array → für den Link nutzen wir die Freitext-Felder
-  currentIdea._eventTitle = e.title; currentIdea._eventVenue = e.venue; currentIdea._eventWhen = currentIdea.when;
+  currentIdea._eventTitle = e.title; currentIdea._eventVenue = e.venue; currentIdea._eventWhen = when;
   drawArt(); updatePreview();
+}
+/* Theme-Swatches an aktiven Stand anpassen (z. B. nach Event-Auswahl) */
+function syncThemeUI() {
+  document.querySelectorAll(".swatch").forEach(x => x.classList.toggle("active", x.dataset.theme === activeTheme));
+  const pv = $("#preview"); if (pv) pv.className = "invite-preview theme-" + activeTheme;
 }
 
 function renderCards() {
@@ -1343,15 +1401,17 @@ function showReceived(d) {
   hearts.innerHTML = "";
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const theme = THEMES[d.th] || THEMES.night;
-    const pool = [(MOTIFS[d.mo] || MOTIFS.heart).glyph, ...theme.glyphs, "♥"];
-    for (let i = 0; i < 20; i++) {
+    const pool = [(MOTIFS[d.mo] || MOTIFS.heart).glyph, ...theme.glyphs, "♥", "💕"];
+    for (let i = 0; i < 32; i++) {
       const s = document.createElement("span");
       s.textContent = pool[Math.floor(Math.random() * pool.length)];
       s.style.left = Math.random() * 100 + "%";
-      s.style.fontSize = (13 + Math.random() * 16) + "px";
-      s.style.color = ["#f4ece0","#e0b09e","#caa05a"][Math.floor(Math.random()*3)];
-      s.style.animationDuration = (7 + Math.random() * 7) + "s";
-      s.style.animationDelay = -(Math.random() * 10) + "s";
+      const big = Math.random() < .25;
+      s.style.fontSize = (big ? 22 + Math.random() * 14 : 12 + Math.random() * 12) + "px";
+      s.style.opacity = big ? ".5" : "1";
+      s.style.color = ["#f4ece0","#e0b09e","#caa05a","#fff6ea"][Math.floor(Math.random()*4)];
+      s.style.animationDuration = (big ? 11 + Math.random() * 8 : 7 + Math.random() * 6) + "s";
+      s.style.animationDelay = -(Math.random() * 12) + "s";
       hearts.appendChild(s);
     }
   }
@@ -1377,6 +1437,8 @@ function showReceived(d) {
   $("#envelope").onkeydown = e => { if (e.key === "Enter" || e.key === " ") openEnv(); };
 
   $("#rvName").textContent = d.n || "dich";
+  const greetings = ["Für dich ✨","Etwas Schönes wartet 💕","Eine kleine Überraschung 🌸","Ganz für dich 💌"];
+  $("#rvGreeting").textContent = d.n ? `Hey ${d.n} ✨` : greetings[Math.floor(Math.random()*greetings.length)];
   $("#rvMood").textContent = "✦ " + ((THEMES[d.th] || THEMES.night).mood) + " ✦";
   $("#rvMsg").textContent = d.m || (d.t ? "Lust auf: " + d.t + "?" : "Lust auf ein Date in Dresden?");
   $("#rvDetail").innerHTML = d.t
