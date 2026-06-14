@@ -39,6 +39,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   padding:8px 14px;font-family:inherit;font-size:14px;color:var(--elbe-soft);
 }
 .fine-filters select:focus{outline:none;border-color:var(--rose)}
+.fine-filters input[type=search]{
+  background:#fff8ef;border:1.5px solid var(--sand-deep);border-radius:99px;
+  padding:8px 16px;font-family:inherit;font-size:14px;color:var(--ink);min-width:230px;
+}
+.fine-filters input[type=search]:focus{outline:none;border-color:var(--rose)}
 .count{font-size:13px;color:var(--muted)}
 
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:24px}
@@ -462,6 +467,7 @@ footer{text-align:center;padding:40px 22px 50px;color:var(--muted);font-size:13p
   <div class="section-sub">Stimmung wählen, Budget und Ort eingrenzen — die Ideen passen sich an.</div>
   <div class="moods" id="moods"></div>
   <div class="fine-filters">
+    <input id="fSearch" type="search" placeholder="🔍 Idee suchen (z. B. Buch, Eis, Wein) …" autocomplete="off">
     <select id="fBudget">
       <option value="">💰 Budget: egal</option>
       <option value="0">Kostenlos</option>
@@ -861,7 +867,7 @@ const MOODS = ["Alle","Romantisch","Kultur","Aktiv","Kulinarisch","Entspannt","A
 /* ============================================================
    LIVE-EVENTS — echte Dresdner Termine (Sommer 2026, datiert)
 ============================================================ */
-let EVENTS = [
+const EVENTS = [
   { date:"2026-06-19", end:"2026-06-21", title:"Pirnaer Stadtfest", venue:"Altstadt Pirna", tag:"Stadtfest", free:true, time:"ganztägig",
     text:"Drei Tage Fest in der malerischen Altstadt vor den Toren Dresdens — Musik, Stände und Elbflair. Mit der S-Bahn in 20 Min dort." },
   { date:"2026-06-26", end:"2026-06-28", title:"Elbhangfest – „Rockt den Weber!“", venue:"Loschwitz bis Pillnitz", tag:"Festival", free:true, time:"ganztägig",
@@ -910,14 +916,17 @@ MOODS.forEach(m => {
   moodsEl.appendChild(b);
 });
 ["fBudget","fPlace","fTime"].forEach(id => $("#" + id).addEventListener("change", renderCards));
+$("#fSearch").addEventListener("input", renderCards);
 
 function filtered() {
   const b = $("#fBudget").value, p = $("#fPlace").value, t = $("#fTime").value;
+  const q = $("#fSearch").value.trim().toLowerCase();
   return IDEAS.filter(i =>
     (activeMood === "Alle" || i.mood === activeMood) &&
     (b === "" || String(i.budget) === b) &&
     (p === "" || i.place === p) &&
-    (t === "" || i.time === t || i.time === "flexibel"));
+    (t === "" || i.time === t || i.time === "flexibel") &&
+    (q === "" || (i.title + " " + i.text + " " + i.venue + " " + i.mood).toLowerCase().includes(q)));
 }
 /* Kleine Twists, die zufällig auf die Karten gestreut werden */
 const TWISTS = [
@@ -1018,8 +1027,13 @@ function syncThemeUI() {
 
 function renderCards() {
   const pool = filtered();
-  $("#count").textContent = pool.length + " Ideen im Pool";
-  const chosen = sample(pool, Math.min(9, pool.length));
+  const searching = $("#fSearch").value.trim() !== "";
+  const chosen = searching
+    ? [...pool].sort((a, b) => a.title.localeCompare(b.title, "de")).slice(0, 30)
+    : sample(pool, Math.min(9, pool.length));
+  $("#count").textContent = searching
+    ? pool.length + " Treffer"
+    : pool.length + " Ideen im Pool";
   $("#cards").innerHTML = chosen.length ? chosen.map((idea, i) => `
     <div class="date-card" style="animation-delay:${i * 55}ms">
       <div class="dc-top">
@@ -1041,11 +1055,13 @@ function renderCards() {
         <button class="btn btn-primary" data-i="${i}">Einladen ✦</button>
       </div>
     </div>`).join("")
-    : `<div class="no-results">Für diese Kombination ist nichts dabei — lockere einen Filter, dann wird's wieder bunt.</div>`;
+    : `<div class="no-results">${searching
+        ? "Nichts gefunden für „" + esc($("#fSearch").value.trim()) + "“ — versuch ein anderes Wort wie „Eis“, „Wein“ oder „Buch“."
+        : "Für diese Kombination ist nichts dabei — lockere einen Filter, dann wird's wieder bunt."}</div>`;
   $("#cards").querySelectorAll("[data-i]").forEach(btn =>
     btn.onclick = () => openInvite(chosen[Number(btn.dataset.i)]));
 }
-$("#shuffle").onclick = () => { renderCards(); toast("Frische Ideen für euch ✦"); };
+$("#shuffle").onclick = () => { $("#fSearch").value = ""; renderCards(); toast("Frische Ideen für euch ✦"); };
 
 /* ============================================================
    SVG-MOTIVE — werden live „gezeichnet“
@@ -1601,30 +1617,7 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
-/* Live-Events aus der täglich aktualisierten events.json laden und mit der
-   kuratierten Liste mischen. Schlägt der Abruf fehl, bleibt die Liste wie sie ist. */
-const CURATED_EVENTS = EVENTS.slice();
-async function loadLiveEvents() {
-  try {
-    const r = await fetch("events.json?t=" + Date.now());
-    if (!r.ok) return;
-    const data = await r.json();
-    if (!data.events || !data.events.length) return;
-    // Zusammenführen: kuratierte zuerst, dann Live-Events ohne Titel-Dopplung
-    const seen = new Set(CURATED_EVENTS.map(e => e.title.toLowerCase().slice(0, 24) + "|" + e.date));
-    const merged = CURATED_EVENTS.slice();
-    for (const e of data.events) {
-      const key = (e.title || "").toLowerCase().slice(0, 24) + "|" + e.date;
-      if (e.title && e.date && !seen.has(key)) { seen.add(key); merged.push(e); }
-    }
-    EVENTS = merged;
-    renderEvents();
-    console.log(`Live-Events geladen: ${data.events.length} (Stand ${data.updated || "?"})`);
-  } catch { /* offline o. Ä. — kuratierte Liste bleibt */ }
-}
-
 renderEvents();
-loadLiveEvents();
 renderCards();
 </script>
 </body>
